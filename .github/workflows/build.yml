@@ -1,0 +1,36 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restaurar
+        run: dotnet restore PimpMyWindows.sln
+
+      - name: Compilar
+        run: dotnet build PimpMyWindows.sln --configuration Release --no-restore
+
+      - name: Testes
+        run: dotnet test PimpMyWindows.sln --configuration Release --no-build --verbosity normal
+
+      - name: Publicar executável (validação)
+        run: >
+          dotnet publish src/PimpMyWindows.Desktop/PimpMyWindows.Desktop.csproj
+          --configuration Release --runtime win-x64 --self-contained false
+          -p:PublishSingleFile=true --output artifacts/win-x64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PimpMyWindows-win-x64
+          path: artifacts/win-x64/

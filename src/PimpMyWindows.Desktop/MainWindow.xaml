@@ -1,0 +1,196 @@
+<Window x:Class="PimpMyWindows.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Pimp my Windows"
+        Width="960" Height="720" MinWidth="720" MinHeight="520"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource WindowBackground}"
+        FontFamily="Segoe UI" FontSize="13">
+
+  <Grid Margin="20,16,20,12">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <!-- Cabeçalho -->
+    <Grid Grid.Row="0" Margin="0,0,0,12">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <StackPanel>
+        <TextBlock Text="Pimp my Windows" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AccentBrush}" />
+        <TextBlock Style="{StaticResource MutedText}">
+          <Run Text="{Binding OsDescription, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding AdminStatusText, Mode=OneWay}" />
+        </TextBlock>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+        <Button Style="{StaticResource ToolbarButton}" Content="Criar ponto de restauração"
+                Command="{Binding RestorePointCommand}"
+                ToolTip="Recomendado antes de aplicar ajustes: permite voltar o Windows ao estado de agora." />
+        <Button Style="{StaticResource ToolbarButton}" Content="Atualizar" Command="{Binding RefreshCommand}"
+                ToolTip="Lê novamente o estado atual do sistema." />
+      </StackPanel>
+    </Grid>
+
+    <!-- Aviso de administrador -->
+    <Border Grid.Row="1" Margin="0,0,0,12" Padding="14,10" CornerRadius="8"
+            Background="{StaticResource BannerWarningBackground}"
+            BorderBrush="{StaticResource BannerWarningBorder}" BorderThickness="1">
+      <Border.Style>
+        <Style TargetType="Border">
+          <Setter Property="Visibility" Value="Collapsed" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding ShowAdminBanner}" Value="True">
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Border.Style>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock TextWrapping="Wrap" VerticalAlignment="Center"
+                   Text="Você pode aplicar a maioria dos ajustes assim. Os que alteram o computador inteiro, o ponto de restauração e alguns programas de inicialização precisam de administrador." />
+        <Button Grid.Column="1" Margin="16,0,0,0" Padding="12,6" Content="Reiniciar como administrador"
+                Command="{Binding ElevateCommand}" />
+      </Grid>
+    </Border>
+
+    <!-- Conteúdo -->
+    <TabControl Grid.Row="2" Padding="0" BorderThickness="0" Background="Transparent">
+
+      <TabItem Header="Ajustes">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,12,0,0">
+          <ItemsControl ItemsSource="{Binding Groups}" Margin="0,0,8,0">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <StackPanel Margin="0,0,0,10">
+                  <TextBlock Text="{Binding Title}" FontSize="17" FontWeight="SemiBold" Margin="2,6,0,8" />
+                  <ItemsControl ItemsSource="{Binding Items}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Border Style="{StaticResource Card}">
+                          <Grid>
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="*" />
+                              <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                              <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}" Style="{StaticResource CardTitle}" />
+                                <Border Style="{StaticResource Badge}" Background="{Binding RiskBackground}">
+                                  <TextBlock Text="{Binding RiskText}" FontSize="11" />
+                                </Border>
+                                <TextBlock Text="{Binding StateText}" Style="{StaticResource MutedText}"
+                                           Margin="12,0,0,0" VerticalAlignment="Center" FontSize="12" />
+                              </StackPanel>
+                              <TextBlock Text="{Binding Summary}" Style="{StaticResource MutedText}" Margin="0,4,0,0" />
+                              <Expander Header="Saiba mais" Margin="0,6,0,0">
+                                <StackPanel Margin="0,6,0,0">
+                                  <TextBlock Text="{Binding Details}" TextWrapping="Wrap" />
+                                  <TextBlock Text="{Binding Warning}" TextWrapping="Wrap" Margin="0,8,0,0"
+                                             Foreground="{StaticResource DangerText}">
+                                    <TextBlock.Style>
+                                      <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                          <DataTrigger Binding="{Binding HasWarning}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                          </DataTrigger>
+                                        </Style.Triggers>
+                                      </Style>
+                                    </TextBlock.Style>
+                                  </TextBlock>
+                                  <TextBlock Text="{Binding RequirementsText}" Style="{StaticResource MutedText}"
+                                             Margin="0,8,0,0" FontSize="12" />
+                                </StackPanel>
+                              </Expander>
+                            </StackPanel>
+                            <Button Grid.Column="1" Style="{StaticResource ActionButton}"
+                                    Content="{Binding ActionLabel}"
+                                    Command="{Binding DataContext.ToggleTweakCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}" />
+                          </Grid>
+                        </Border>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </TabItem>
+
+      <TabItem Header="Programas na inicialização">
+        <Grid Margin="0,12,0,0">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+          </Grid.RowDefinitions>
+          <TextBlock Style="{StaticResource MutedText}" Margin="2,0,0,10"
+                     Text="Estes programas abrem junto com o Windows. Desativar não desinstala nada: o programa só deixa de abrir sozinho e você pode reativá-lo quando quiser. Se não conhece um programa, pesquise o nome antes de desativar." />
+          <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding StartupItems}" Margin="0,0,8,0">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border Style="{StaticResource Card}">
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                          <TextBlock Text="{Binding Name}" Style="{StaticResource CardTitle}" />
+                          <TextBlock Text="{Binding StatusText}" Style="{StaticResource MutedText}"
+                                     Margin="12,0,0,0" VerticalAlignment="Center" FontSize="12" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding ScopeText}" Style="{StaticResource MutedText}" FontSize="12" Margin="0,2,0,0" />
+                        <TextBlock Text="{Binding Command}" Style="{StaticResource MutedText}" FontSize="11"
+                                   TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Margin="0,2,0,0" />
+                      </StackPanel>
+                      <Button Grid.Column="1" Style="{StaticResource ActionButton}"
+                              Content="{Binding ActionLabel}"
+                              Command="{Binding DataContext.ToggleStartupCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                              CommandParameter="{Binding}" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="Segurança e sobre">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,12,0,0">
+          <StackPanel Margin="2,0,8,0">
+            <TextBlock Text="Como o Pimp my Windows protege o seu computador" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,8" />
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Text="• Nada muda sem você clicar. Ao abrir, o programa apenas lê o estado atual." />
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Text="• Antes de cada ajuste, os valores originais são guardados. Reverter devolve exatamente o que você tinha." />
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Text="• Se algo falhar no meio de um ajuste, o que já tinha sido alterado é desfeito automaticamente." />
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Text="• Só usamos recursos nativos do Windows (registro e comandos oficiais). Nada é baixado e nenhum dado é enviado." />
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,6" Text="• Não apagamos arquivos, não desinstalamos programas e não mexemos em serviços de segurança ou no Windows Update." />
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,16" Text="• Tudo o que o programa faz fica no log, em %LOCALAPPDATA%\PimpMyWindows\logs." />
+            <TextBlock Text="Código aberto (licença MIT)" FontSize="17" FontWeight="SemiBold" Margin="0,0,0,8" />
+            <TextBlock TextWrapping="Wrap" Style="{StaticResource MutedText}"
+                       Text="github.com/psychookov/pimpmywindows — projeto brasileiro e colaborativo. Sugestões, correções e novos ajustes são bem-vindos." />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+    </TabControl>
+
+    <!-- Barra de status -->
+    <Border Grid.Row="3" Margin="0,10,0,0" Padding="12,8" CornerRadius="6"
+            Background="{StaticResource CardBackground}" BorderBrush="{StaticResource CardBorder}" BorderThickness="1">
+      <TextBlock Text="{Binding StatusText}" TextWrapping="Wrap" />
+    </Border>
+  </Grid>
+</Window>

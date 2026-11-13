@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>PimpMyWindows.Desktop</RootNamespace>
+    <AssemblyName>PimpMyWindows</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Description>Otimize o Windows com segurança, de forma clara e reversível.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PimpMyWindows.Core\PimpMyWindows.Core.csproj" />
+  </ItemGroup>
+
+</Project>
