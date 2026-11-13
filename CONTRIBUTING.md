@@ -19,6 +19,8 @@ Obrigado por querer ajudar! O projeto é brasileiro, em português, e feito para
    - `Risk` honesto (`Safe` só para o que é cosmético/conforto e trivial de reverter);
    - `RequiresAdmin` verdadeiro **se e somente se** mexer em `HKLM`;
    - `Restart` correto;
+   - `MinBuild`/`MaxBuild` se o ajuste só existe em certas versões (use as constantes de `WindowsBuilds`);
+   - `Mode: UserMode.Technical` se exige conhecimento técnico. Risco `Advanced` só é permitido no Modo Técnico;
    - `Warning` quando houver perda de funcionalidade;
    - para cada valor: o valor otimizado e o **padrão real do Windows** (`null` quando o valor normalmente não existe).
 3. Rode `dotnet test`. Os testes do catálogo checam várias regras automaticamente.

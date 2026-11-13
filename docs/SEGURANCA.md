@@ -29,7 +29,21 @@ Os testes do catálogo bloqueiam automaticamente ajustes em chaves sensíveis (`
 
 - **Seguro**: muda aparência ou conforto, é trivial de reverter e não tira funcionalidade importante.
 - **Moderado**: muda comportamento do sistema. Sempre pede confirmação e explica o impacto.
-- **Avançado**: reservado para um futuro modo avançado. Não existe no catálogo padrão (há teste garantindo isso).
+- **Avançado**: só pode existir no Modo Técnico (há teste garantindo isso).
+
+## Modo Básico e Modo Técnico
+
+- **Modo Básico** (padrão): só ajustes simples, que qualquer pessoa pode aplicar entendendo o que mudam. Nunca inclui risco "Avançado".
+- **Modo Técnico**: mostra também ajustes para quem sabe o que está fazendo. Para ativá-lo, o programa pede confirmação e lembra do ponto de restauração. Todas as proteções (backup, reversão, log) continuam valendo.
+- O programa sempre abre no Modo Básico.
+
+## Ajustes por versão do Windows
+
+Cada ajuste pode declarar `MinBuild` e `MaxBuild`. O programa:
+
+- **esconde** da tela o que não existe na sua versão do Windows e mostra quantos foram escondidos;
+- **recusa aplicar** (no motor, não só na interface) um ajuste fora da faixa de builds dele;
+- **permite reverter** sempre, para desfazer algo mesmo depois de uma atualização do Windows.
 
 ## Checklist para novos ajustes
 

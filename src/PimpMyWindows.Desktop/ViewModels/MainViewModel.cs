@@ -17,6 +17,9 @@ public sealed class MainViewModel : ObservableObject
     private readonly RestorePointService _restorePoints;
     private readonly IUserPrompt _prompt;
     private readonly IActionLog _log;
+    private readonly int _windowsBuild;
+    private bool _isTechnicalMode;
+    private string _filterInfoText = string.Empty;
     private string _statusText = "Pronto. Nada é alterado até você clicar em Aplicar.";
 
     public MainViewModel(
@@ -27,8 +30,10 @@ public sealed class MainViewModel : ObservableObject
         IUserPrompt prompt,
         IActionLog log,
         bool isAdministrator,
-        string osDescription)
+        string osDescription,
+        int windowsBuild)
     {
+        _windowsBuild = windowsBuild;
         _catalog = catalog;
         _engine = engine;
         _startup = startup;
@@ -43,9 +48,34 @@ public sealed class MainViewModel : ObservableObject
         RestorePointCommand = new AsyncRelayCommand(_ => CreateRestorePointAsync());
         ElevateCommand = new RelayCommand(_ => Elevate(), _ => !IsAdministrator);
         RefreshCommand = new RelayCommand(_ => Refresh());
+        ToggleModeCommand = new RelayCommand(_ => ToggleMode());
 
         Refresh();
     }
+
+    /// <summary>No Modo Técnico aparecem os ajustes avançados. O padrão é sempre o Básico.</summary>
+    public bool IsTechnicalMode
+    {
+        get => _isTechnicalMode;
+        private set
+        {
+            if (SetProperty(ref _isTechnicalMode, value))
+            {
+                OnPropertyChanged(nameof(ModeButtonText));
+            }
+        }
+    }
+
+    public string ModeButtonText => IsTechnicalMode ? "Modo: Técnico" : "Modo: Básico";
+
+    /// <summary>Quantos ajustes estão escondidos e por quê (modo ou versão do Windows).</summary>
+    public string FilterInfoText
+    {
+        get => _filterInfoText;
+        private set => SetProperty(ref _filterInfoText, value);
+    }
+
+    public ICommand ToggleModeCommand { get; }
 
     public string OsDescription { get; }
 
@@ -79,14 +109,71 @@ public sealed class MainViewModel : ObservableObject
 
     private void Refresh()
     {
+        // 1) só o que existe nesta versão do Windows; 2) só o que o modo atual permite.
+        var forThisWindows = _catalog.Where(t => TweakApplicability.IsApplicable(t, _windowsBuild)).ToList();
+        var visible = forThisWindows.Where(t => IsTechnicalMode || t.Mode == UserMode.Basic).ToList();
+
         Groups.Clear();
-        foreach (var group in _catalog.GroupBy(t => t.Category))
+        foreach (var group in visible.GroupBy(t => t.Category))
         {
             var items = group.Select(t => new TweakItemViewModel(t, _engine.GetState(t))).ToList();
             Groups.Add(new TweakGroupViewModel(CategoryTitle(group.Key), items));
         }
 
+        FilterInfoText = BuildFilterInfo(
+            hiddenByWindows: _catalog.Count - forThisWindows.Count,
+            hiddenByMode: forThisWindows.Count - visible.Count);
+
         LoadStartup();
+    }
+
+    private string BuildFilterInfo(int hiddenByWindows, int hiddenByMode)
+    {
+        var parts = new List<string>();
+
+        if (hiddenByMode > 0)
+        {
+            parts.Add($"{hiddenByMode} {Plural(hiddenByMode, "ajuste avançado", "ajustes avançados")} no Modo Técnico");
+        }
+
+        if (hiddenByWindows > 0)
+        {
+            parts.Add(
+                $"{hiddenByWindows} {Plural(hiddenByWindows, "ajuste oculto", "ajustes ocultos")} " +
+                $"por não valer para o seu Windows (build {_windowsBuild})");
+        }
+
+        return string.Join(" · ", parts);
+    }
+
+    private static string Plural(int count, string singular, string plural) => count == 1 ? singular : plural;
+
+    private void ToggleMode()
+    {
+        if (!IsTechnicalMode)
+        {
+            if (!_prompt.Confirm(
+                    "Modo Técnico",
+                    "O Modo Técnico mostra ajustes avançados que podem afetar o funcionamento do Windows e que " +
+                    "exigem conhecer o que cada um faz.\n\n" +
+                    "Continuam valendo as proteções: cópia de segurança antes de alterar, reversão e log. " +
+                    "Recomendamos criar um ponto de restauração antes.\n\nAtivar o Modo Técnico?"))
+            {
+                StatusText = "Continuamos no Modo Básico.";
+                return;
+            }
+
+            IsTechnicalMode = true;
+            _log.Write("Modo Técnico ativado pelo usuário.");
+            Refresh();
+            StatusText = "Modo Técnico ativado. Leia a explicação de cada ajuste antes de aplicar.";
+            return;
+        }
+
+        IsTechnicalMode = false;
+        _log.Write("Modo Básico ativado pelo usuário.");
+        Refresh();
+        StatusText = "Modo Básico ativado.";
     }
 
     private void LoadStartup()

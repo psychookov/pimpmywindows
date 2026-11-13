@@ -14,6 +14,12 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 
 ## v0.2 — Ver o que está ativo
 
+- [x] Ajustes filtrados pela build do Windows (`MinBuild`/`MaxBuild`)
+- [x] Modo Básico e Modo Técnico
+- [ ] Lembrar o último modo escolhido (arquivo de configurações)
+- [ ] No Modo Técnico, mostrar os ajustes de outras builds como indisponíveis, com o motivo
+- [ ] Mais ajustes no Modo Técnico (serviços, tarefas agendadas, DNS sobre HTTPS)
+
 - Painel de visão geral: o que já está otimizado, o que não está
 - Recomendações por perfil (Básico, Jogos, Notebook, Privacidade) com pré-seleção segura
 - Exportar e importar perfis (JSON)

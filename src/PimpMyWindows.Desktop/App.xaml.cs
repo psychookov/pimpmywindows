@@ -41,7 +41,8 @@ public partial class App : Application
 
         var registry = new WindowsRegistryAccess();
         var backups = new JsonBackupStore(Path.Combine(dataDirectory, "backups"));
-        var engine = new TweakEngine(registry, backups, _log, IsAdministrator);
+        var windowsBuild = environment.Build;
+        var engine = new TweakEngine(registry, backups, _log, IsAdministrator, () => windowsBuild);
         var startup = new StartupService(registry, IsAdministrator, _log);
         var restorePoints = new RestorePointService(IsAdministrator, _log);
 
@@ -55,7 +56,8 @@ public partial class App : Application
             new MessageBoxPrompt(),
             _log,
             isAdministrator,
-            environment.Description);
+            environment.Description,
+            windowsBuild);
 
         new MainWindow { DataContext = viewModel }.Show();
     }

@@ -26,8 +26,12 @@
         <TextBlock Style="{StaticResource MutedText}">
           <Run Text="{Binding OsDescription, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding AdminStatusText, Mode=OneWay}" />
         </TextBlock>
+        <TextBlock Text="{Binding FilterInfoText}" Style="{StaticResource MutedText}" FontSize="12" />
       </StackPanel>
       <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+        <Button Style="{StaticResource ToolbarButton}" Content="{Binding ModeButtonText}"
+                Command="{Binding ToggleModeCommand}"
+                ToolTip="Alterna entre o Modo Básico (ajustes simples e seguros) e o Modo Técnico (mais recursos, para quem sabe o que está fazendo)." />
         <Button Style="{StaticResource ToolbarButton}" Content="Criar ponto de restauração"
                 Command="{Binding RestorePointCommand}"
                 ToolTip="Recomendado antes de aplicar ajustes: permite voltar o Windows ao estado de agora." />
