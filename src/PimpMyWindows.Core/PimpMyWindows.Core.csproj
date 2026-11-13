@@ -6,4 +6,8 @@
     <AssemblyName>PimpMyWindows.Core</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="PimpMyWindows.Core.Tests" />
+  </ItemGroup>
+
 </Project>
