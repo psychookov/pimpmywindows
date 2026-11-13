@@ -74,6 +74,11 @@ public sealed class TweakItemViewModel : ObservableObject
         get
         {
             var parts = new List<string>();
+            if (Definition.MinBuild is not null || Definition.MaxBuild is not null)
+            {
+                parts.Add($"existe em: {TweakApplicability.DescribeSupportedVersions(Definition)}");
+            }
+
             if (Definition.RequiresAdmin)
             {
                 parts.Add("exige administrador");

@@ -82,6 +82,27 @@ public static class TweakCatalog
             Warning: "Como o ajuste usa uma política do sistema, o Windows pode mostrar o aviso “algumas configurações são " +
                      "gerenciadas pela sua organização” na página de privacidade. Isso é esperado e some ao reverter."),
 
+        new TweakDefinition(
+            Id: "privacy.activity-history",
+            Name: "Desativar o histórico de atividades",
+            Summary: "Impede o Windows de registrar e enviar à Microsoft o que você abre e faz no computador.",
+            Details: "O histórico de atividades guarda os aplicativos, arquivos e sites que você usou para montar uma “linha do tempo” " +
+                     "e sincronizá-la com a conta Microsoft. Estas políticas desligam o registro local e o envio. " +
+                     "Não apaga o que já foi gravado antes.",
+            Category: TweakCategory.Privacy,
+            Risk: RiskLevel.Moderate,
+            RequiresAdmin: true,
+            Restart: RestartRequirement.SignOut,
+            Changes:
+            [
+                DWord(Hklm(@"SOFTWARE\Policies\Microsoft\Windows\System", "EnableActivityFeed"), 0, null),
+                DWord(Hklm(@"SOFTWARE\Policies\Microsoft\Windows\System", "PublishUserActivities"), 0, null),
+                DWord(Hklm(@"SOFTWARE\Policies\Microsoft\Windows\System", "UploadUserActivities"), 0, null),
+            ],
+            Warning: "Por usar políticas do sistema, o Windows pode mostrar “algumas configurações são gerenciadas pela sua organização”. " +
+                     "Isso some ao reverter.",
+            Mode: UserMode.Technical),
+
         // ---------- Desempenho ----------
         new TweakDefinition(
             Id: "performance.transparency",
@@ -176,6 +197,22 @@ public static class TweakCatalog
                 Text(Hkcu(@"Control Panel\Accessibility\Keyboard Response", "Flags"), "122", "126"),
             ],
             Warning: "Se você ou alguém que usa este computador depende desses atalhos de acessibilidade, não aplique este ajuste."),
+
+        new TweakDefinition(
+            Id: "interface.taskbar-left",
+            Name: "Alinhar a barra de tarefas à esquerda",
+            Summary: "Deixa o botão Iniciar e os ícones no canto esquerdo, como no Windows 10.",
+            Details: "No Windows 11 os ícones da barra de tarefas ficam centralizados e mudam de lugar conforme você abre ou fecha programas. " +
+                     "Alinhados à esquerda, o botão Iniciar fica sempre no mesmo canto. Só muda a posição dos ícones.",
+            Category: TweakCategory.Interface,
+            Risk: RiskLevel.Safe,
+            RequiresAdmin: false,
+            Restart: RestartRequirement.None,
+            Changes:
+            [
+                DWord(Hkcu(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarAl"), 0, 1),
+            ],
+            MinBuild: WindowsBuilds.Windows11_21H2),
 
         // ---------- Jogos ----------
         new TweakDefinition(

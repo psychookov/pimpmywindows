@@ -17,13 +17,24 @@ public sealed class TweakEngine
     private readonly IBackupStore _backups;
     private readonly IActionLog _log;
     private readonly Func<bool> _isAdministrator;
+    private readonly Func<int>? _getWindowsBuild;
 
-    public TweakEngine(IRegistryAccess registry, IBackupStore backups, IActionLog log, Func<bool> isAdministrator)
+    /// <param name="getWindowsBuild">
+    /// Build do Windows em uso. Quando informado, o motor se recusa a aplicar ajustes fora da faixa de builds
+    /// deles (reverter continua sempre permitido, para poder desfazer algo após uma atualização do Windows).
+    /// </param>
+    public TweakEngine(
+        IRegistryAccess registry,
+        IBackupStore backups,
+        IActionLog log,
+        Func<bool> isAdministrator,
+        Func<int>? getWindowsBuild = null)
     {
         _registry = registry;
         _backups = backups;
         _log = log;
         _isAdministrator = isAdministrator;
+        _getWindowsBuild = getWindowsBuild;
     }
 
     public TweakState GetState(TweakDefinition tweak)
@@ -48,6 +59,14 @@ public sealed class TweakEngine
 
     public OperationResult Apply(TweakDefinition tweak)
     {
+        if (_getWindowsBuild is not null && !TweakApplicability.IsApplicable(tweak, _getWindowsBuild()))
+        {
+            _log.Write($"RECUSADO {tweak.Id}: não vale para a build {_getWindowsBuild()}");
+            return OperationResult.Fail(
+                $"“{tweak.Name}” não vale para a sua versão do Windows (build {_getWindowsBuild()}). " +
+                $"Ele existe em: {TweakApplicability.DescribeSupportedVersions(tweak)}. Nada foi alterado.");
+        }
+
         if (tweak.RequiresAdmin && !_isAdministrator())
         {
             return OperationResult.Fail(AdminRequiredMessage);

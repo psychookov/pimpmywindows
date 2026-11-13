@@ -15,6 +15,9 @@ public sealed class WindowsEnvironmentInfo
 
     public Version OsVersion => Environment.OSVersion.Version;
 
+    /// <summary>Número de build do Windows (por exemplo 19045 ou 26100).</summary>
+    public int Build => OsVersion.Build;
+
     /// <summary>O projeto suporta Windows 10 e Windows 11.</summary>
     public bool IsSupportedWindows => OperatingSystem.IsWindows() && OsVersion.Major >= 10;
 

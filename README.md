@@ -26,6 +26,12 @@ Existem ótimos scripts de otimização para quem já entende de Windows (como o
 
 Todos os ajustes estão em [`TweakCatalog.cs`](src/PimpMyWindows.Core/Tweaks/TweakCatalog.cs), com texto em português e valores originais do Windows.
 
+## Dois modos e ajustes sob medida para o seu Windows
+
+- **Modo Básico** (padrão): só ajustes simples e seguros.
+- **Modo Técnico**: mais recursos, para quem sabe o que está fazendo. Pede confirmação para ativar.
+- **Por versão do Windows**: o programa só mostra o que existe na sua build (Windows 10 ou 11, e a versão exata), e avisa quantos ajustes foram escondidos.
+
 ## Segurança em primeiro lugar
 
 Leia [docs/SEGURANCA.md](docs/SEGURANCA.md). Em resumo:

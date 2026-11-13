@@ -70,8 +70,38 @@ public class TweakCatalogTests
     }
 
     [Fact]
-    public void NoTweak_IsAdvancedRisk_InTheDefaultCatalog()
+    public void AdvancedRiskTweaks_AreOnlyAvailableInTechnicalMode()
     {
-        Assert.DoesNotContain(TweakCatalog.All, t => t.Risk == RiskLevel.Advanced);
+        Assert.All(
+            TweakCatalog.All.Where(t => t.Risk == RiskLevel.Advanced),
+            t => Assert.Equal(UserMode.Technical, t.Mode));
+    }
+
+    [Theory]
+    [MemberData(nameof(AllTweaks))]
+    public void BasicModeTweaks_AreNeverAdvancedRisk(TweakDefinition tweak)
+    {
+        if (tweak.Mode == UserMode.Basic)
+        {
+            Assert.NotEqual(RiskLevel.Advanced, tweak.Risk);
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(AllTweaks))]
+    public void Tweak_BuildRange_IsValid(TweakDefinition tweak)
+    {
+        if (tweak.MinBuild is { } min && tweak.MaxBuild is { } max)
+        {
+            Assert.True(min <= max, $"{tweak.Id}: MinBuild maior que MaxBuild");
+        }
+
+        Assert.True(tweak.MinBuild is null or >= WindowsBuilds.Windows10_2004, $"{tweak.Id}: MinBuild abaixo do Windows 10");
+    }
+
+    [Fact]
+    public void BasicMode_HasEnoughTweaks_ToBeUseful()
+    {
+        Assert.True(TweakCatalog.All.Count(t => t.Mode == UserMode.Basic) >= 8);
     }
 }
