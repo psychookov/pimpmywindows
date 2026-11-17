@@ -1,4 +1,3 @@
-using System.Security;
 using PimpMyWindows.Core.Platform;
 using PimpMyWindows.Core.Safety;
 
@@ -81,10 +80,14 @@ public sealed class TweakEngine
             }
 
             // O backup vem ANTES de qualquer alteração. Se ele falhar, nada é mexido.
+            // Se já existe um backup deste ajuste (por exemplo, o Windows desfez parte dele numa atualização),
+            // os valores originais do usuário são preservados: só o que está "otimizado" agora não pode ser
+            // tomado como original.
+            var existing = _backups.Load(tweak.Id);
             previous = tweak.Changes
-                .Select(c => new BackedUpValue(c.Location, _registry.Read(c.Location)))
+                .Select(c => new BackedUpValue(c.Location, OriginalValueFor(c, existing)))
                 .ToList();
-            _backups.Save(new TweakBackup(tweak.Id, DateTimeOffset.UtcNow, previous));
+            _backups.Save(new TweakBackup(tweak.Id, existing?.CreatedAt ?? DateTimeOffset.UtcNow, previous));
         }
         catch (Exception ex) when (IsExpectedFailure(ex))
         {
@@ -161,8 +164,37 @@ public sealed class TweakEngine
         "seja executado como administrador.";
 
     private static bool BackupCoversTweak(TweakDefinition tweak, TweakBackup backup) =>
-        backup.Values.Count == tweak.Changes.Count
-        && tweak.Changes.All(c => backup.Values.Any(v => v.Location == c.Location));
+        BackupRules.Covers(tweak, backup);
+
+    private RegistryData? OriginalValueFor(RegistryChange change, TweakBackup? existing)
+    {
+        var current = _registry.Read(change.Location);
+
+        // O valor atual já é o otimizado: ele não é o original do usuário. Se havia um backup, o original está nele.
+        if (object.Equals(current, change.OptimizedValue)
+            && existing is not null
+            && BackupHasLocation(existing, change.Location, out var original))
+        {
+            return original;
+        }
+
+        return current;
+    }
+
+    private static bool BackupHasLocation(TweakBackup backup, Platform.RegistryLocation location, out RegistryData? original)
+    {
+        foreach (var value in backup.Values)
+        {
+            if (value.Location == location)
+            {
+                original = value.Previous;
+                return true;
+            }
+        }
+
+        original = null;
+        return false;
+    }
 
     private bool TryRestore(IEnumerable<BackedUpValue> values)
     {
@@ -204,7 +236,5 @@ public sealed class TweakEngine
 
     private static string Describe(RegistryData? data) => data is null ? "(não existia)" : data.ToString();
 
-    private static bool IsExpectedFailure(Exception ex) =>
-        ex is IOException or UnauthorizedAccessException or SecurityException
-            or NotSupportedException or InvalidCastException or InvalidOperationException or ArgumentException;
+    private static bool IsExpectedFailure(Exception ex) => ExpectedFailures.Is(ex);
 }

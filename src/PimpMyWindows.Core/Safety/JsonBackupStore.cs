@@ -13,15 +13,18 @@ public sealed partial class JsonBackupStore : IBackupStore
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
     private readonly string _directory;
+    private readonly IDirectoryGuard _guard;
 
-    public JsonBackupStore(string directory)
+    public JsonBackupStore(string directory, IDirectoryGuard? guard = null)
     {
         _directory = directory;
+        _guard = guard ?? new NullDirectoryGuard();
     }
 
     public void Save(TweakBackup backup)
     {
         var path = PathFor(backup.TweakId);
+        _guard.BeforeWrite(_directory);
         Directory.CreateDirectory(_directory);
 
         // Escreve em um arquivo temporário e troca no final, para nunca deixar um backup pela metade.
@@ -33,14 +36,45 @@ public sealed partial class JsonBackupStore : IBackupStore
     public TweakBackup? Load(string tweakId)
     {
         var path = PathFor(tweakId);
-        if (!File.Exists(path))
+        _guard.BeforeRead(_directory);
+        return File.Exists(path) ? ReadFile(path, tweakId) : null;
+    }
+
+    public IReadOnlyList<TweakBackup> ListAll()
+    {
+        _guard.BeforeRead(_directory);
+        if (!Directory.Exists(_directory))
         {
-            return null;
+            return [];
         }
 
+        var result = new List<TweakBackup>();
+        foreach (var file in Directory.EnumerateFiles(_directory, "*.json"))
+        {
+            var id = Path.GetFileNameWithoutExtension(file);
+            if (!ValidId().IsMatch(id))
+            {
+                continue;
+            }
+
+            var backup = ReadFile(file, id);
+            if (backup is not null)
+            {
+                result.Add(backup);
+            }
+        }
+
+        return result;
+    }
+
+    private static TweakBackup? ReadFile(string path, string expectedId)
+    {
         try
         {
-            return JsonSerializer.Deserialize<BackupDto>(File.ReadAllText(path))?.ToModel();
+            var backup = JsonSerializer.Deserialize<BackupDto>(File.ReadAllText(path))?.ToModel();
+
+            // O nome do arquivo e o conteúdo precisam concordar; senão o arquivo foi mexido e é ignorado.
+            return backup is not null && backup.TweakId == expectedId ? backup : null;
         }
         catch (Exception ex) when (ex is JsonException or FormatException or ArgumentException or IOException)
         {
@@ -52,6 +86,7 @@ public sealed partial class JsonBackupStore : IBackupStore
     public void Delete(string tweakId)
     {
         var path = PathFor(tweakId);
+        _guard.BeforeWrite(_directory);
         if (File.Exists(path))
         {
             File.Delete(path);

@@ -52,6 +52,7 @@ public sealed record RegistryChange(
 /// para quem não tem experiência técnica.
 /// <see cref="MinBuild"/>/<see cref="MaxBuild"/> limitam o ajuste a uma faixa de builds do Windows
 /// (nulo = sem limite); <see cref="Mode"/> define em qual modo ele aparece.
+/// <see cref="Recommended"/> marca o que vale para quase todo mundo (só Seguro e do Modo Básico).
 /// </summary>
 public sealed record TweakDefinition(
     string Id,
@@ -66,4 +67,5 @@ public sealed record TweakDefinition(
     string? Warning = null,
     UserMode Mode = UserMode.Basic,
     int? MinBuild = null,
-    int? MaxBuild = null);
+    int? MaxBuild = null,
+    bool Recommended = false);

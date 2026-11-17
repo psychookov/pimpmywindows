@@ -14,6 +14,7 @@ public static class TweakCatalog
         // ---------- Privacidade ----------
         new TweakDefinition(
             Id: "privacy.advertising-id",
+            Recommended: true,
             Name: "Desativar o ID de publicidade",
             Summary: "Impede que aplicativos usem um identificador único seu para mostrar anúncios personalizados.",
             Details: "O Windows cria um ID de publicidade para cada usuário, que os aplicativos podem ler para montar um perfil de interesses. " +
@@ -29,6 +30,7 @@ public static class TweakCatalog
 
         new TweakDefinition(
             Id: "privacy.suggestions",
+            Recommended: true,
             Name: "Desativar sugestões e dicas do Windows",
             Summary: "Remove sugestões de aplicativos no Menu Iniciar, dicas nas Configurações e conteúdo promocional.",
             Details: "Desliga o “conteúdo sugerido” do Windows (Content Delivery Manager): aplicativos sugeridos no Menu Iniciar, " +
@@ -50,6 +52,7 @@ public static class TweakCatalog
 
         new TweakDefinition(
             Id: "privacy.bing-search",
+            Recommended: true,
             Name: "Desativar a pesquisa na web (Bing) no Menu Iniciar",
             Summary: "A busca do Menu Iniciar passa a procurar apenas no seu computador.",
             Details: "Por padrão, o que você digita no Menu Iniciar também é enviado ao Bing para exibir sugestões da web. " +
@@ -103,6 +106,65 @@ public static class TweakCatalog
                      "Isso some ao reverter.",
             Mode: UserMode.Technical),
 
+        new TweakDefinition(
+            Id: "privacy.recent-docs",
+            Name: "Não registrar arquivos e pastas recentes",
+            Summary: "O Windows deixa de lembrar os últimos documentos que você abriu (Menu Iniciar, Acesso rápido, listas de salto).",
+            Details: "Útil em computadores compartilhados ou para quem não quer deixar rastros locais do que abriu. Não apaga o histórico que já existe; ele só deixa de crescer.",
+            Category: TweakCategory.Privacy,
+            Risk: RiskLevel.Safe,
+            RequiresAdmin: false,
+            Restart: RestartRequirement.SignOut,
+            Changes:
+            [
+                DWord(Hkcu(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "Start_TrackDocs"), 0, 1),
+            ]),
+
+        new TweakDefinition(
+            Id: "privacy.feedback",
+            Name: "Parar de pedir sua opinião ao Windows",
+            Summary: "Desativa os pedidos de feedback (“Como foi sua experiência?”) que o Windows mostra de tempos em tempos.",
+            Details: "Define que o Windows nunca deve solicitar avaliação. Não afeta atualizações nem recursos do sistema.",
+            Category: TweakCategory.Privacy,
+            Risk: RiskLevel.Safe,
+            RequiresAdmin: false,
+            Restart: RestartRequirement.None,
+            Changes:
+            [
+                DWord(Hkcu(@"Software\Microsoft\Siuf\Rules", "NumberOfSIUFInPeriod"), 0, null),
+            ]),
+
+        new TweakDefinition(
+            Id: "privacy.recall",
+            Name: "Impedir o Recall (análise de tela por IA)",
+            Summary: "Bloqueia o Windows de tirar e analisar capturas periódicas da sua tela para o recurso Recall.",
+            Details: "Usa a política oficial DisableAIDataAnalysis. Vale só para versões do Windows 11 que têm o recurso (24H2 em diante, em computadores Copilot+).",
+            Category: TweakCategory.Privacy,
+            Risk: RiskLevel.Moderate,
+            RequiresAdmin: true,
+            Restart: RestartRequirement.Restart,
+            Changes:
+            [
+                DWord(Hklm(@"SOFTWARE\Policies\Microsoft\Windows\WindowsAI", "DisableAIDataAnalysis"), 1, null),
+            ],
+            Warning: "Por usar uma política do sistema, o Windows pode mostrar “algumas configurações são gerenciadas pela sua organização”. Isso some ao reverter.",
+            MinBuild: WindowsBuilds.Windows11_24H2),
+
+        new TweakDefinition(
+            Id: "privacy.error-reporting",
+            Name: "Desativar o envio de relatórios de erro à Microsoft",
+            Summary: "Quando um programa trava, o Windows deixa de enviar o relatório do problema.",
+            Details: "Desliga o Relatório de Erros do Windows (WER) para o computador inteiro. Relatórios podem conter trechos de memória do programa que travou.",
+            Category: TweakCategory.Privacy,
+            Risk: RiskLevel.Moderate,
+            RequiresAdmin: true,
+            Restart: RestartRequirement.None,
+            Changes:
+            [
+                DWord(Hklm(@"SOFTWARE\Microsoft\Windows\Windows Error Reporting", "Disabled"), 1, null),
+            ],
+            Mode: UserMode.Technical),
+
         // ---------- Desempenho ----------
         new TweakDefinition(
             Id: "performance.transparency",
@@ -150,9 +212,26 @@ public static class TweakCatalog
                 Text(Hkcu(@"Control Panel\Desktop", "MenuShowDelay"), "100", "400"),
             ]),
 
+        new TweakDefinition(
+            Id: "performance.fast-startup",
+            Name: "Desativar a inicialização rápida",
+            Summary: "Faz “Desligar” realmente desligar tudo, em vez de hibernar parte do sistema.",
+            Details: "A inicialização rápida salva o núcleo do Windows no disco ao desligar. Isso acelera ligar o computador, mas pode causar problemas com atualizações, drivers e dual boot. Desativar deixa o desligamento completo.",
+            Category: TweakCategory.Performance,
+            Risk: RiskLevel.Moderate,
+            RequiresAdmin: true,
+            Restart: RestartRequirement.Restart,
+            Changes:
+            [
+                DWord(Hklm(@"SYSTEM\CurrentControlSet\Control\Session Manager\Power", "HiberbootEnabled"), 0, 1),
+            ],
+            Warning: "O computador pode demorar alguns segundos a mais para ligar, principalmente em discos HDD.",
+            Mode: UserMode.Technical),
+
         // ---------- Interface e conforto ----------
         new TweakDefinition(
             Id: "interface.file-extensions",
+            Recommended: true,
             Name: "Mostrar as extensões dos arquivos",
             Summary: "Exibe o final do nome dos arquivos (.pdf, .docx, .exe), o que ajuda a reconhecer arquivos suspeitos.",
             Details: "Golpes comuns usam nomes como “fatura.pdf.exe”: com as extensões escondidas, o arquivo parece um PDF. " +
@@ -214,9 +293,83 @@ public static class TweakCatalog
             ],
             MinBuild: WindowsBuilds.Windows11_21H2),
 
+        new TweakDefinition(
+            Id: "interface.show-hidden-files",
+            Name: "Mostrar arquivos e pastas ocultos",
+            Summary: "Exibe no Explorador os itens marcados como ocultos.",
+            Details: "Útil para quem precisa chegar a pastas como AppData. Os arquivos continuam exatamente como estão; só passam a ser visíveis. Cuidado ao apagar o que você não conhece.",
+            Category: TweakCategory.Interface,
+            Risk: RiskLevel.Safe,
+            RequiresAdmin: false,
+            Restart: RestartRequirement.None,
+            Changes:
+            [
+                DWord(Hkcu(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "Hidden"), 1, 2),
+            ],
+            Mode: UserMode.Technical),
+
+        new TweakDefinition(
+            Id: "interface.taskview-button",
+            Name: "Esconder o botão de Visão de Tarefas",
+            Summary: "Remove da barra de tarefas o botão que mostra todas as janelas abertas.",
+            Details: "O atalho Win+Tab continua funcionando. Só o botão deixa de ocupar espaço na barra.",
+            Category: TweakCategory.Interface,
+            Risk: RiskLevel.Safe,
+            RequiresAdmin: false,
+            Restart: RestartRequirement.None,
+            Changes:
+            [
+                DWord(Hkcu(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowTaskViewButton"), 0, 1),
+            ]),
+
+        new TweakDefinition(
+            Id: "interface.taskbar-search",
+            Name: "Esconder a caixa de pesquisa da barra de tarefas",
+            Summary: "Libera espaço na barra de tarefas; a pesquisa continua disponível ao apertar a tecla Windows.",
+            Details: "Só esconde o campo de busca da barra. Digitar com o Menu Iniciar aberto continua pesquisando normalmente.",
+            Category: TweakCategory.Interface,
+            Risk: RiskLevel.Safe,
+            RequiresAdmin: false,
+            Restart: RestartRequirement.None,
+            Changes:
+            [
+                DWord(Hkcu(@"Software\Microsoft\Windows\CurrentVersion\Search", "SearchboxTaskbarMode"), 0, null),
+            ]),
+
+        new TweakDefinition(
+            Id: "interface.clock-seconds",
+            Name: "Mostrar os segundos no relógio",
+            Summary: "O relógio da barra de tarefas passa a exibir os segundos.",
+            Details: "Só muda a aparência do relógio. Em computadores muito antigos o relógio é atualizado com mais frequência, o que é imperceptível.",
+            Category: TweakCategory.Interface,
+            Risk: RiskLevel.Safe,
+            RequiresAdmin: false,
+            Restart: RestartRequirement.SignOut,
+            Changes:
+            [
+                DWord(Hkcu(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "ShowSecondsInSystemClock"), 1, null),
+            ]),
+
+        new TweakDefinition(
+            Id: "interface.widgets",
+            Name: "Desativar o painel de Widgets e Notícias",
+            Summary: "Remove o painel de notícias e clima do Windows 11 e o botão da barra de tarefas.",
+            Details: "Usa a política oficial AllowNewsAndInterests. O painel deixa de rodar em segundo plano, o que poupa um pouco de memória.",
+            Category: TweakCategory.Interface,
+            Risk: RiskLevel.Moderate,
+            RequiresAdmin: true,
+            Restart: RestartRequirement.SignOut,
+            Changes:
+            [
+                DWord(Hklm(@"SOFTWARE\Policies\Microsoft\Dsh", "AllowNewsAndInterests"), 0, null),
+            ],
+            Warning: "Por usar uma política do sistema, o Windows pode mostrar “algumas configurações são gerenciadas pela sua organização”. Isso some ao reverter.",
+            MinBuild: WindowsBuilds.Windows11_21H2),
+
         // ---------- Jogos ----------
         new TweakDefinition(
             Id: "gaming.game-dvr",
+            Recommended: true,
             Name: "Desativar a captura de jogos em segundo plano (Game DVR)",
             Summary: "Impede que o Windows grave seus jogos em segundo plano, liberando processador e placa de vídeo.",
             Details: "A captura em segundo plano do Xbox Game Bar mantém um buffer de vídeo consumindo recursos enquanto você joga, " +
@@ -231,6 +384,23 @@ public static class TweakCatalog
                 DWord(Hkcu(@"Software\Microsoft\Windows\CurrentVersion\GameDVR", "AppCaptureEnabled"), 0, 1),
             ],
             Warning: "Capturas e gravações feitas pelo Xbox Game Bar deixam de funcionar. Se você grava seus jogos com ele, não aplique."),
+
+        new TweakDefinition(
+            Id: "gaming.mouse-accel",
+            Name: "Desativar a aceleração do mouse",
+            Summary: "O ponteiro passa a se mover proporcionalmente ao movimento da mão, o que dá mais precisão em jogos.",
+            Details: "A “precisão do ponteiro” do Windows altera a velocidade conforme você move o mouse rápido ou devagar. Desativá-la deixa o movimento previsível, como em jogos de tiro.",
+            Category: TweakCategory.Gaming,
+            Risk: RiskLevel.Safe,
+            RequiresAdmin: false,
+            Restart: RestartRequirement.SignOut,
+            Changes:
+            [
+                Text(Hkcu(@"Control Panel\Mouse", "MouseSpeed"), "0", "1"),
+                Text(Hkcu(@"Control Panel\Mouse", "MouseThreshold1"), "0", "6"),
+                Text(Hkcu(@"Control Panel\Mouse", "MouseThreshold2"), "0", "10"),
+            ],
+            Warning: "Pode parecer estranho nos primeiros dias, até acostumar. Reverter devolve o comportamento padrão."),
     ];
 
     private static RegistryLocation Hkcu(string subKey, string valueName) =>
