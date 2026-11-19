@@ -1,4 +1,5 @@
-using System.Windows.Media;
+using System.Globalization;
+using System.Text;
 using PimpMyWindows.Core.Tweaks;
 
 namespace PimpMyWindows.Desktop.ViewModels;
@@ -6,14 +7,23 @@ namespace PimpMyWindows.Desktop.ViewModels;
 public sealed class TweakItemViewModel : ObservableObject
 {
     private TweakState _state;
+    private bool _desired;
+    private bool _isExpanded;
 
     public TweakItemViewModel(TweakDefinition definition, TweakState state)
     {
         Definition = definition;
         _state = state;
+        _desired = state == TweakState.Applied;
+        SearchIndex = Normalize($"{definition.Name} {definition.Summary} {definition.Details}");
     }
 
+    /// <summary>Avisa a página quando o item entra ou sai da lista de pendentes.</summary>
+    public event Action? PendingChanged;
+
     public TweakDefinition Definition { get; }
+
+    public string SearchIndex { get; }
 
     public string Name => Definition.Name;
 
@@ -25,35 +35,13 @@ public sealed class TweakItemViewModel : ObservableObject
 
     public bool HasWarning => !string.IsNullOrEmpty(Definition.Warning);
 
-    public TweakState State
-    {
-        get => _state;
-        set
-        {
-            if (SetProperty(ref _state, value))
-            {
-                OnPropertyChanged(nameof(StateText));
-                OnPropertyChanged(nameof(ActionLabel));
-                OnPropertyChanged(nameof(IsApplied));
-                OnPropertyChanged(nameof(CanApply));
-            }
-        }
-    }
+    public bool IsRecommended => Definition.Recommended;
 
-    public bool IsApplied => _state is TweakState.Applied;
+    public bool IsTechnical => Definition.Mode == UserMode.Technical;
 
-    /// <summary>Desconhecido não permite aplicar: o programa não sabe o estado atual.</summary>
-    public bool CanApply => _state != TweakState.Unknown;
+    public bool RequiresAdmin => Definition.RequiresAdmin;
 
-    public string StateText => _state switch
-    {
-        TweakState.Applied => "Ativo",
-        TweakState.NotApplied => "Não aplicado",
-        TweakState.Partial => "Parcialmente aplicado",
-        _ => "Estado desconhecido",
-    };
-
-    public string ActionLabel => _state is TweakState.Applied or TweakState.Partial ? "Reverter" : "Aplicar";
+    public string RiskKey => Definition.Risk.ToString();
 
     public string RiskText => Definition.Risk switch
     {
@@ -62,12 +50,59 @@ public sealed class TweakItemViewModel : ObservableObject
         _ => "Avançado",
     };
 
-    public Brush RiskBackground => Definition.Risk switch
+    public TweakState State
     {
-        RiskLevel.Safe => new SolidColorBrush(Color.FromRgb(0xDD, 0xF3, 0xE4)),
-        RiskLevel.Moderate => new SolidColorBrush(Color.FromRgb(0xFF, 0xEB, 0xBD)),
-        _ => new SolidColorBrush(Color.FromRgb(0xF9, 0xD6, 0xD3)),
+        get => _state;
+        private set
+        {
+            if (SetProperty(ref _state, value))
+            {
+                OnPropertyChanged(nameof(StateText));
+                OnPropertyChanged(nameof(HasStateTag));
+                OnPropertyChanged(nameof(IsApplied));
+                OnPropertyChanged(nameof(CanToggle));
+                OnPropertyChanged(nameof(IsPending));
+                PendingChanged?.Invoke();
+            }
+        }
+    }
+
+    /// <summary>O que o usuário quer: ligado (aplicar) ou desligado (reverter). Só vale de fato ao clicar em Aplicar.</summary>
+    public bool Desired
+    {
+        get => _desired;
+        set
+        {
+            if (SetProperty(ref _desired, value))
+            {
+                OnPropertyChanged(nameof(IsPending));
+                PendingChanged?.Invoke();
+            }
+        }
+    }
+
+    public bool IsApplied => _state == TweakState.Applied;
+
+    public bool IsPending => _desired != IsApplied;
+
+    /// <summary>Estado desconhecido não permite mexer: o programa não sabe como está agora.</summary>
+    public bool CanToggle => _state != TweakState.Unknown;
+
+    public bool HasStateTag => _state is TweakState.Applied or TweakState.Partial or TweakState.Unknown;
+
+    public string StateText => _state switch
+    {
+        TweakState.Applied => "Ativo",
+        TweakState.Partial => "Parcial",
+        TweakState.Unknown => "Estado desconhecido",
+        _ => string.Empty,
     };
+
+    public bool IsExpanded
+    {
+        get => _isExpanded;
+        set => SetProperty(ref _isExpanded, value);
+    }
 
     public string RequirementsText
     {
@@ -93,6 +128,31 @@ public sealed class TweakItemViewModel : ObservableObject
 
             return string.Join(" · ", parts);
         }
+    }
+
+    /// <summary>Depois de aplicar/reverter: assume o estado real do sistema e zera o que estava pendente.</summary>
+    public void Accept(TweakState realState)
+    {
+        State = realState;
+        Desired = IsApplied;
+    }
+
+    public void ResetDesired() => Desired = IsApplied;
+
+    /// <summary>Minúsculas e sem acentos, para a busca achar "extensao" ao procurar "extensões".</summary>
+    public static string Normalize(string text)
+    {
+        var decomposed = text.Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder(decomposed.Length);
+        foreach (var c in decomposed)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+            {
+                builder.Append(char.ToLowerInvariant(c));
+            }
+        }
+
+        return builder.ToString();
     }
 }
 

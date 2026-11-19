@@ -13,18 +13,23 @@ public sealed class StartupItemViewModel
 
     public string Name => Entry.Name;
 
+    /// <summary>Descrição do programa, ou o comando quando não há descrição.</summary>
+    public string Subtitle => string.IsNullOrWhiteSpace(Entry.Description) ? Entry.Command : Entry.Description;
+
     public string Command => Entry.Command;
 
     public bool IsEnabled => Entry.IsEnabled;
 
-    public string StatusText => Entry.IsEnabled ? "Inicia com o Windows" : "Desativado";
+    public bool FileMissing => Entry.FileMissing;
 
-    public string ActionLabel => Entry.IsEnabled ? "Desativar" : "Ativar";
+    public bool NeedsAdmin => Entry.RequiresAdministrator;
 
     public string ScopeText => Entry.Source switch
     {
-        StartupSource.CurrentUser => "Só para o seu usuário",
-        StartupSource.AllUsers => "Todos os usuários (exige administrador)",
-        _ => "Todos os usuários, 32 bits (exige administrador)",
+        StartupSource.CurrentUser => "Só você",
+        StartupSource.AllUsers => "Todos os usuários",
+        StartupSource.AllUsers32Bit => "Todos (32 bits)",
+        StartupSource.UserStartupFolder => "Pasta Inicializar",
+        _ => "Pasta Inicializar (todos)",
     };
 }
