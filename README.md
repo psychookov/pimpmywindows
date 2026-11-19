@@ -126,3 +126,7 @@ O Pimp my Windows altera configurações do sistema. Apesar de todas as proteç�
 ## Licença
 
 [MIT](LICENSE)
+
+## Quem faz
+
+Projeto de código aberto da **4Cloudapps**, a divisão de aplicativos da **it4cloud solutions**, aberto a contribuições de qualquer pessoa.

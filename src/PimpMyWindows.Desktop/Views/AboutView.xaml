@@ -28,6 +28,8 @@
 
       <TextBlock Text="CÓDIGO ABERTO" Style="{StaticResource SectionTitle}" />
       <TextBlock TextWrapping="Wrap" Text="Licença MIT. Qualquer pessoa pode ler o código, sugerir melhorias e contribuir." />
+      <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource Muted}" Margin="0,16,0,0"
+                 Text="Um projeto da 4Cloudapps, a divisão de aplicativos da it4cloud solutions." />
       <Button Content="Ver o código no GitHub" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left" Margin="0,12,0,0"
               Command="{Binding OpenRepositoryCommand}" />
     </StackPanel>
