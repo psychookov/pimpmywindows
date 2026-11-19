@@ -7,7 +7,11 @@ O objetivo do Pimp my Windows é deixar o Windows mais enxuto **sem criar risco*
 | Garantia | Como é cumprida |
 | --- | --- |
 | Nada muda sem ação do usuário | Ao abrir, só há leitura (`TweakEngine.GetState`). Alterar exige clicar em Aplicar/Reverter. |
-| Backup antes de alterar | `TweakEngine.Apply` grava os valores atuais em `%LOCALAPPDATA%\PimpMyWindows\backups\<ajuste>.json` **antes** da primeira gravação. Se o backup falhar, nada é alterado. |
+| Backup antes de alterar | `TweakEngine.Apply` grava os valores atuais **antes** da primeira gravação. Se o backup falhar, nada é alterado. Ajustes de usuário: `%LOCALAPPDATA%\PimpMyWindows\backups`. Ajustes que exigem administrador: `%ProgramData%\PimpMyWindows-Backups`. |
+| Backup do administrador protegido | A pasta da máquina só aceita escrita de Administradores/SYSTEM (usuários só leem). Antes de ler ou escrever, o programa confere o **dono** da pasta; se não for o administrador, a pasta é ignorada. Assim um programa comum não consegue plantar backups falsos para fazer um processo elevado gravar onde não deveria. |
+| Original preservado | Se o Windows desfizer parte de um ajuste e você aplicar de novo, o backup mantém o valor **original seu**, não o valor já otimizado. |
+| Você vê antes de confirmar | Aplicar passa por uma prévia com `valor atual → novo valor` de cada chave. Nada é gravado antes da confirmação. |
+| Central Desfazer | Lista tudo o que o programa alterou, detecta o que o Windows já desfez sozinho e permite reverter um, vários ou todos. |
 | Sem alterações pela metade | Se uma gravação falhar, o que já foi escrito é desfeito na hora. |
 | Reverter devolve o seu valor | Reverter restaura o que **você** tinha. Sem backup, usa o padrão documentado do Windows. |
 | Transparência | Cada alteração (chave, valor novo, valor antigo) vai para `%LOCALAPPDATA%\PimpMyWindows\logs`. |
@@ -58,6 +62,8 @@ Cada ajuste pode declarar `MinBuild` e `MaxBuild`. O programa:
 
 ## Limitações conhecidas
 
+- Os valores de registro dos ajustes ainda **não foram validados em um Windows real**; use primeiro em uma máquina virtual.
+- Backups corrompidos ou que não batem com o ajuste são ignorados: o motor volta ao padrão documentado do Windows.
 - Alguns ajustes de `HKCU` só têm efeito depois de sair e entrar no Windows; a interface avisa.
 - Atualizações grandes do Windows podem redefinir configurações. Use o botão **Atualizar** para ver o estado real.
 - Em computadores gerenciados por uma empresa, políticas do administrador podem sobrepor os ajustes.
