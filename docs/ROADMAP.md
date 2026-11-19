@@ -16,14 +16,16 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 
 - [x] Ajustes filtrados pela build do Windows (`MinBuild`/`MaxBuild`)
 - [x] Modo Básico e Modo Técnico
-- [ ] Lembrar o último modo escolhido (arquivo de configurações)
+- [x] Preferências em arquivo (tema e ponto de restauração); o Modo Técnico nunca é lembrado, de propósito
 - [ ] No Modo Técnico, mostrar os ajustes de outras builds como indisponíveis, com o motivo
 - [ ] Mais ajustes no Modo Técnico (serviços, tarefas agendadas, DNS sobre HTTPS)
 
-- Painel de visão geral: o que já está otimizado, o que não está
-- Recomendações por perfil (Básico, Jogos, Notebook, Privacidade) com pré-seleção segura
-- Exportar e importar perfis (JSON)
-- Busca e filtro por categoria e risco
+- [x] Painel de visão geral: o que já está otimizado, o que não está
+- [x] Perfis prontos (Privacidade, Jogos, Conforto) com pré-seleção segura
+- [x] Exportar e importar a seleção (JSON)
+- [x] Busca por ajuste, tema claro/escuro, prévia antes de aplicar e Central Desfazer
+- [ ] Perfil Notebook (depende de plano de energia)
+- [ ] Filtro por categoria e risco
 
 ## v0.3 — Mais recursos nativos
 

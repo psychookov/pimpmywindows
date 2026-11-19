@@ -43,4 +43,6 @@ internal sealed class FailingBackupStore : PimpMyWindows.Core.Safety.IBackupStor
     public void Delete(string tweakId)
     {
     }
+
+    public IReadOnlyList<PimpMyWindows.Core.Safety.TweakBackup> ListAll() => [];
 }

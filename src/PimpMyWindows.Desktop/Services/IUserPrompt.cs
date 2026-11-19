@@ -1,4 +1,5 @@
 using System.Windows;
+using PimpMyWindows.Desktop.Views;
 
 namespace PimpMyWindows.Desktop.Services;
 
@@ -10,6 +11,9 @@ public interface IUserPrompt
     void ShowInfo(string title, string message);
 
     void ShowError(string title, string message);
+
+    /// <summary>Mostra a conferência do que será alterado. Retorna verdadeiro se o usuário confirmou.</summary>
+    bool ShowPlanPreview(PlanPreviewModel model);
 }
 
 public sealed class MessageBoxPrompt : IUserPrompt
@@ -23,4 +27,10 @@ public sealed class MessageBoxPrompt : IUserPrompt
 
     public void ShowError(string title, string message) =>
         MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+
+    public bool ShowPlanPreview(PlanPreviewModel model)
+    {
+        var window = new PreviewWindow(model) { Owner = Application.Current.MainWindow };
+        return window.ShowDialog() == true;
+    }
 }

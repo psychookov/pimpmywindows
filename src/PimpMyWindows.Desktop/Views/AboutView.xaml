@@ -1,0 +1,35 @@
+<UserControl x:Class="PimpMyWindows.Desktop.Views.AboutView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="32,28,32,24" MaxWidth="760" HorizontalAlignment="Left">
+      <TextBlock Text="Sobre o Pimp my Windows" Style="{StaticResource PageTitle}" />
+      <TextBlock Text="{Binding VersionText}" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" />
+      <TextBlock TextWrapping="Wrap" Margin="0,16,0,0"
+                 Text="Um otimizador de Windows 10 e 11 em português, de código aberto e feito no Brasil. Ele só usa recursos nativos do sistema, explica cada ajuste com palavras simples e deixa você desfazer tudo." />
+
+      <TextBlock Text="COMO A SEGURANÇA FUNCIONA" Style="{StaticResource SectionTitle}" />
+      <Border Style="{StaticResource Card}">
+        <StackPanel>
+          <TextBlock TextWrapping="Wrap" Text="• Você sempre vê o que vai mudar (valor atual → novo valor) antes de confirmar." />
+          <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" Text="• Antes de alterar, o programa guarda uma cópia do valor que você tinha. Se algo falhar no meio, ele desfaz o que já tinha feito." />
+          <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" Text="• A Central Desfazer lista tudo o que foi alterado e devolve os valores originais." />
+          <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" Text="• Nada é baixado, nenhum serviço é instalado e nenhum dado seu sai do computador." />
+          <TextBlock TextWrapping="Wrap" Margin="0,6,0,0" Text="• Os ajustes que mudam o computador inteiro guardam suas cópias em uma pasta protegida, que um programa comum não consegue adulterar." />
+        </StackPanel>
+      </Border>
+
+      <TextBlock Text="ARQUIVOS DO PROGRAMA" Style="{StaticResource SectionTitle}" />
+      <WrapPanel>
+        <Button Content="Abrir logs" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding OpenLogsCommand}" />
+        <Button Content="Abrir minhas cópias de segurança" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding OpenBackupsCommand}" />
+        <Button Content="Abrir cópias da máquina" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding OpenMachineBackupsCommand}" />
+      </WrapPanel>
+
+      <TextBlock Text="CÓDIGO ABERTO" Style="{StaticResource SectionTitle}" />
+      <TextBlock TextWrapping="Wrap" Text="Licença MIT. Qualquer pessoa pode ler o código, sugerir melhorias e contribuir." />
+      <Button Content="Ver o código no GitHub" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Left" Margin="0,12,0,0"
+              Command="{Binding OpenRepositoryCommand}" />
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

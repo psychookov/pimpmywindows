@@ -2,9 +2,11 @@ using System.IO;
 using System.Windows;
 using PimpMyWindows.Core.Platform;
 using PimpMyWindows.Core.Safety;
+using PimpMyWindows.Core.Settings;
 using PimpMyWindows.Core.Startup;
 using PimpMyWindows.Core.Tweaks;
 using PimpMyWindows.Desktop.Services;
+using PimpMyWindows.Desktop.Theme;
 using PimpMyWindows.Desktop.ViewModels;
 
 namespace PimpMyWindows.Desktop;
@@ -40,24 +42,77 @@ public partial class App : Application
         bool IsAdministrator() => isAdministrator;
 
         var registry = new WindowsRegistryAccess();
-        var backups = new JsonBackupStore(Path.Combine(dataDirectory, "backups"));
         var windowsBuild = environment.Build;
+
+        var settingsStore = new JsonSettingsStore(Path.Combine(dataDirectory, "settings.json"));
+        var settings = settingsStore.Load();
+        var themeController = new ThemeController(settings, settingsStore, registry);
+        themeController.ApplySaved();
+
+        // Ajustes que exigem administrador guardam as cópias de segurança em uma pasta protegida da máquina,
+        // para que um programa comum não consiga adulterá-las. Os demais usam a pasta do usuário.
+        var machineBackupsDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            "PimpMyWindows-Backups");
+        var machineTweakIds = TweakCatalog.All.Where(t => t.RequiresAdmin).Select(t => t.Id).ToHashSet();
+        var backups = new RoutingBackupStore(
+            new JsonBackupStore(Path.Combine(dataDirectory, "backups")),
+            new JsonBackupStore(machineBackupsDirectory, new WindowsDirectoryGuard(IsAdministrator)),
+            machineTweakIds.Contains);
+
         var engine = new TweakEngine(registry, backups, _log, IsAdministrator, () => windowsBuild);
-        var startup = new StartupService(registry, IsAdministrator, _log);
+        var planner = new TweakPlanner(registry, backups, IsAdministrator, () => windowsBuild);
+        var runner = new TweakBatchRunner(engine, _log);
+        var startup = new StartupService(registry, IsAdministrator, _log, files: new WindowsStartupFileSystem());
+        var undo = new UndoCenterService(backups, engine, TweakCatalog.All, _log);
         var restorePoints = new RestorePointService(IsAdministrator, _log);
+
+        var appState = new AppState();
+        var prompt = new MessageBoxPrompt();
+        var restore = new RestorePointCoordinator(restorePoints, settings, settingsStore, appState);
 
         _log.Write($"Pimp my Windows iniciado em {environment.Description}. Administrador: {isAdministrator}.");
 
-        var viewModel = new MainViewModel(
+        var tweaksPage = new TweaksPageViewModel(
+            TweakCatalog.All, engine, planner, runner, restore, prompt, new WindowsFileDialogs(), appState, _log, windowsBuild);
+        var startupPage = new StartupPageViewModel(startup, prompt, appState);
+        var undoPage = new UndoPageViewModel(undo, prompt, appState);
+        var aboutPage = new AboutPageViewModel(dataDirectory, machineBackupsDirectory, prompt);
+
+        ShellViewModel? shell = null;
+        var overview = new OverviewPageViewModel(
             TweakCatalog.All,
             engine,
             startup,
-            restorePoints,
-            new MessageBoxPrompt(),
-            _log,
-            isAdministrator,
+            undo,
+            restore,
+            appState,
+            windowsBuild,
             environment.Description,
-            windowsBuild);
+            new OverviewActions(
+                key => shell!.Navigate(key),
+                () =>
+                {
+                    shell!.Navigate("tweaks");
+                    tweaksPage.MarkRecommended();
+                },
+                async () =>
+                {
+                    var result = await restore.CreateAsync();
+                    if (result.Success)
+                    {
+                        prompt.ShowInfo("Ponto de restauração", result.Message);
+                    }
+                    else
+                    {
+                        prompt.ShowError("Ponto de restauração", result.Message);
+                    }
+                }));
+
+        shell = new ShellViewModel(
+            overview, tweaksPage, startupPage, undoPage, aboutPage, undo,
+            appState, prompt, _log, themeController, restore, isAdministrator, environment.Description);
+        var viewModel = shell;
 
         new MainWindow { DataContext = viewModel }.Show();
     }

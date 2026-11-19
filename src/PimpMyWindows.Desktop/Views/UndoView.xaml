@@ -1,0 +1,77 @@
+<UserControl x:Class="PimpMyWindows.Desktop.Views.UndoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid Margin="32,28,32,20">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <StackPanel>
+      <TextBlock Text="Central Desfazer" Style="{StaticResource PageTitle}" />
+      <TextBlock Text="Tudo o que este programa já alterou no seu Windows, com o caminho de volta. Desfazer devolve os valores que você tinha antes."
+                 Foreground="{DynamicResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap" />
+    </StackPanel>
+
+    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,16,0,0"
+                Visibility="{Binding Count, Converter={StaticResource NotZeroToVis}}">
+      <Button Content="Selecionar todos" Style="{StaticResource GhostButton}" Padding="12,6" Margin="0,0,8,0" Command="{Binding SelectAllCommand}" />
+      <Button Content="Desfazer selecionados" Style="{StaticResource GhostButton}" Padding="12,6" Margin="0,0,8,0" Command="{Binding RevertSelectedCommand}" />
+      <Button Content="Desfazer tudo" Style="{StaticResource GhostButton}" Padding="12,6" Command="{Binding RevertAllCommand}" />
+    </StackPanel>
+
+    <ScrollViewer Grid.Row="2" Margin="0,12,-12,0" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Margin="0,0,12,0">
+        <Border Style="{StaticResource Card}" Visibility="{Binding Count, Converter={StaticResource ZeroToVis}}">
+          <StackPanel>
+            <TextBlock Text="Nada para desfazer" FontWeight="SemiBold" />
+            <TextBlock Text="Quando você aplicar ajustes, eles aparecem aqui, com a opção de desfazer a qualquer momento."
+                       Foreground="{DynamicResource Muted}" TextWrapping="Wrap" Margin="0,2,0,0" />
+          </StackPanel>
+        </Border>
+        <ItemsControl ItemsSource="{Binding Entries}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Style="{StaticResource Card}">
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <CheckBox Style="{StaticResource FlatCheck}" IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                            IsEnabled="{Binding CanRevert}" VerticalAlignment="Top" Margin="0,2,14,0" />
+                  <StackPanel Grid.Column="1">
+                    <WrapPanel>
+                      <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" />
+                      <Border Style="{StaticResource Tag}">
+                        <TextBlock Text="{Binding StateText}" Style="{StaticResource TagText}" />
+                      </Border>
+                    </WrapPanel>
+                    <TextBlock Text="{Binding Summary}" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" Margin="0,3,0,0" />
+                    <TextBlock Text="{Binding AppliedText}" Foreground="{DynamicResource Muted}" FontSize="11" Margin="0,3,0,0" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <Button Content="Reaplicar" Style="{StaticResource GhostButton}" Padding="12,6" Margin="0,0,8,0"
+                            Visibility="{Binding IsPartial, Converter={StaticResource BoolToVis}}"
+                            Command="{Binding DataContext.ReapplyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}" />
+                    <Button Content="Desfazer" Style="{StaticResource GhostButton}" Padding="12,6"
+                            Visibility="{Binding CanRevert, Converter={StaticResource BoolToVis}}"
+                            Command="{Binding DataContext.RevertCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}" />
+                    <Button Content="Descartar registro" Style="{StaticResource GhostButton}" Padding="12,6"
+                            ToolTip="Só remove o registro guardado; nada no Windows é alterado."
+                            Visibility="{Binding WasUndoneOutside, Converter={StaticResource BoolToVis}}"
+                            Command="{Binding DataContext.DiscardCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}" />
+                  </StackPanel>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>
