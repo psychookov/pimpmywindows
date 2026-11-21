@@ -1,0 +1,110 @@
+<UserControl x:Class="PimpMyWindows.Desktop.Views.TestsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel Margin="32,28,32,24" MaxWidth="920" HorizontalAlignment="Left">
+      <TextBlock Text="Testes" Style="{StaticResource PageTitle}" />
+      <TextBlock Foreground="{DynamicResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap"
+                 Text="Meça o seu PC antes e depois de aplicar ajustes: cada resultado é comparado com o teste anterior feito neste computador. Feche os outros programas antes de testar." />
+
+      <!-- Desempenho -->
+      <Border Style="{StaticResource Card}" Margin="0,20,0,10">
+        <StackPanel>
+          <TextBlock Text="Desempenho" FontWeight="SemiBold" Foreground="{DynamicResource Accent}" />
+          <TextBlock Foreground="{DynamicResource Muted}" Margin="0,4,0,10" TextWrapping="Wrap"
+                     Text="Processador, memória e disco. Os números só valem para comparar o mesmo computador com ele mesmo; não são uma nota para comparar com outros PCs." />
+          <WrapPanel>
+            <Button Content="Testar tudo" Style="{StaticResource PrimaryButton}" Padding="16,8" Margin="0,0,8,8" Command="{Binding RunAllCommand}" />
+            <Button Content="CPU e memória" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding RunCpuMemoryCommand}" />
+            <Button Content="Disco" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding RunDiskCommand}" />
+            <Button Content="Cancelar" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding CancelCommand}"
+                    Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+          </WrapPanel>
+          <TextBlock Text="{Binding BusyText}" Foreground="{DynamicResource Info}" Margin="0,0,0,8"
+                     Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" />
+          <ItemsControl ItemsSource="{Binding Results}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Grid Margin="0,4,0,4">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="140" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Text="{Binding Name}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                  <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="12,0,12,0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding ValueText}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Unit}" Foreground="{DynamicResource Muted}" Margin="6,0,0,0" />
+                  </StackPanel>
+                  <TextBlock Grid.Column="2" Text="{Binding ChangeText}" FontSize="12" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                      <Style TargetType="TextBlock">
+                        <Setter Property="Foreground" Value="{DynamicResource Muted}" />
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding ChangeKey}" Value="Better">
+                            <Setter Property="Foreground" Value="{DynamicResource Success}" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding ChangeKey}" Value="Worse">
+                            <Setter Property="Foreground" Value="{DynamicResource Danger}" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBlock.Style>
+                  </TextBlock>
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+      </Border>
+
+      <!-- Rede -->
+      <Border Style="{StaticResource Card}">
+        <StackPanel>
+          <TextBlock Text="Rede" FontWeight="SemiBold" Foreground="{DynamicResource Accent}" />
+          <TextBlock Foreground="{DynamicResource Muted}" Margin="0,4,0,10" TextWrapping="Wrap"
+                     Text="Tempo de resposta, variação e perda de pacotes até o seu roteador e até servidores públicos, mais o tempo de resolução de nomes. É o que importa para lag em jogos e chamadas." />
+          <Button Content="Testar a rede" Style="{StaticResource GhostButton}" HorizontalAlignment="Left" Margin="0,0,0,10" Command="{Binding RunNetworkCommand}" />
+          <ItemsControl ItemsSource="{Binding NetworkLines}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Grid Margin="0,2,0,2">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Text="{Binding Label}" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" />
+                  <TextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap" />
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <TextBlock Text="{Binding NetworkAdvice}" Foreground="{DynamicResource Warning}" TextWrapping="Wrap" Margin="0,10,0,0"
+                     Visibility="{Binding NetworkAdvice, Converter={StaticResource NotEmptyToVis}}" />
+        </StackPanel>
+      </Border>
+
+      <!-- Bateria -->
+      <Border Style="{StaticResource Card}">
+        <StackPanel>
+          <TextBlock Text="Bateria" FontWeight="SemiBold" Foreground="{DynamicResource Accent}" />
+          <ItemsControl ItemsSource="{Binding BatteryLines}" Margin="0,8,0,0">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Grid Margin="0,2,0,2">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Text="{Binding Label}" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" />
+                  <TextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap" />
+                </Grid>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Button Content="Atualizar" Style="{StaticResource GhostButton}" HorizontalAlignment="Left" Margin="0,10,0,0" Command="{Binding RefreshBatteryCommand}" />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

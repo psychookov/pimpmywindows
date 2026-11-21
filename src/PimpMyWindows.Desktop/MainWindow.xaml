@@ -26,6 +26,9 @@
     <DataTemplate DataType="{x:Type vm:DisksPageViewModel}">
       <views:DisksView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:TestsPageViewModel}">
+      <views:TestsView />
+    </DataTemplate>
     <DataTemplate DataType="{x:Type vm:UndoPageViewModel}">
       <views:UndoView />
     </DataTemplate>
