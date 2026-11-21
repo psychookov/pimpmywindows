@@ -1,0 +1,94 @@
+<UserControl x:Class="PimpMyWindows.Desktop.Views.DriversView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid Margin="32,28,32,20">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <StackPanel>
+        <TextBlock Text="Drivers" Style="{StaticResource PageTitle}" />
+        <TextBlock Text="{Binding SummaryText}" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap" />
+        <TextBlock Foreground="{DynamicResource Muted}" FontSize="12" Margin="0,2,0,0" TextWrapping="Wrap"
+                   Text="Aqui nada é baixado de sites de fabricantes. Para atualizar, use o Windows Update ou o site do fabricante do aparelho." />
+      </StackPanel>
+      <TextBox Grid.Column="1" Width="260" Style="{StaticResource SearchBox}" Tag="Buscar driver…"
+               Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" />
+    </Grid>
+
+    <WrapPanel Grid.Row="1" Margin="0,16,0,0">
+      <Button Content="Fazer backup dos drivers" Style="{StaticResource PrimaryButton}" Padding="16,8" Margin="0,0,8,8" Command="{Binding BackupCommand}" />
+      <Button Content="Restaurar backup" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding RestoreCommand}" />
+      <Button Content="Abrir Windows Update" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding OpenWindowsUpdateCommand}" />
+      <Button Content="Gerenciador de Dispositivos" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding OpenDeviceManagerCommand}" />
+      <Button Content="Atualizar lista" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding RefreshCommand}" />
+    </WrapPanel>
+
+    <ScrollViewer Grid.Row="2" Margin="0,4,-12,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Margin="0,0,12,0">
+        <TextBlock Text="Lendo os drivers…" Foreground="{DynamicResource Muted}" Margin="0,0,0,10"
+                   Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}" />
+
+        <TextBlock Text="APARELHOS COM PROBLEMA" Style="{StaticResource SectionTitle}"
+                   Visibility="{Binding ProblemCount, Converter={StaticResource NotZeroToVis}}" />
+        <ItemsControl ItemsSource="{Binding Problems}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Style="{StaticResource Card}" BorderBrush="{DynamicResource Warning}">
+                <StackPanel>
+                  <TextBlock Text="{Binding DeviceName}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding Description}" Foreground="{DynamicResource Warning}" TextWrapping="Wrap" Margin="0,2,0,0" />
+                  <TextBlock Text="{Binding ErrorCode, StringFormat='Código de erro do Windows: {0}'}" FontSize="11"
+                             Foreground="{DynamicResource Muted}" Margin="0,2,0,0" />
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <TextBlock Text="DRIVERS INSTALADOS" Style="{StaticResource SectionTitle}" />
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+          <Button Content="Todos" Style="{StaticResource ChipButton}" Command="{Binding SetFilterCommand}" CommandParameter="all" />
+          <Button Content="Para dar uma olhada" Style="{StaticResource ChipButton}" Command="{Binding SetFilterCommand}" CommandParameter="old"
+                  ToolTip="Vídeo, rede, áudio e Bluetooth com mais de 2 anos, de fabricantes que não são a Microsoft. Idade sozinha não é defeito." />
+          <Button Content="Sem assinatura" Style="{StaticResource ChipButton}" Command="{Binding SetFilterCommand}" CommandParameter="problems" />
+        </StackPanel>
+        <ItemsControl ItemsSource="{Binding Items}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border Style="{StaticResource Card}" Padding="16,10" Margin="0,0,0,6">
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel>
+                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Meta}" Foreground="{DynamicResource Muted}" FontSize="12" TextWrapping="Wrap" Margin="0,2,0,0" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Style="{StaticResource Tag}" Background="{DynamicResource WarningBg}"
+                            Visibility="{Binding IsOld, Converter={StaticResource BoolToVis}}">
+                      <TextBlock Text="antigo" Style="{StaticResource TagText}" Foreground="{DynamicResource Warning}" />
+                    </Border>
+                    <Border Style="{StaticResource Tag}" Background="{DynamicResource DangerBg}"
+                            Visibility="{Binding IsUnsigned, Converter={StaticResource BoolToVis}}">
+                      <TextBlock Text="sem assinatura" Style="{StaticResource TagText}" Foreground="{DynamicResource Danger}" />
+                    </Border>
+                  </StackPanel>
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

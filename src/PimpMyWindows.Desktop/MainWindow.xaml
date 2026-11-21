@@ -17,6 +17,15 @@
     <DataTemplate DataType="{x:Type vm:StartupPageViewModel}">
       <views:StartupView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:PcPageViewModel}">
+      <views:PcView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:DriversPageViewModel}">
+      <views:DriversView />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:DisksPageViewModel}">
+      <views:DisksView />
+    </DataTemplate>
     <DataTemplate DataType="{x:Type vm:UndoPageViewModel}">
       <views:UndoView />
     </DataTemplate>
@@ -48,28 +57,30 @@
           <TextBlock Text="Otimização segura e reversível" FontSize="11" Foreground="{DynamicResource Muted}" Margin="0,2,0,0" />
         </StackPanel>
 
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding NavItems}" Margin="0,26,0,0">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <Button Style="{StaticResource NavButton}" Tag="{Binding IsSelected}" CommandParameter="{Binding Key}"
-                      Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}">
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                  </Grid.ColumnDefinitions>
-                  <TextBlock Text="{Binding Glyph}" FontFamily="{StaticResource IconFont}" FontSize="16" VerticalAlignment="Center" />
-                  <TextBlock Grid.Column="1" Text="{Binding Title}" FontWeight="SemiBold" VerticalAlignment="Center" />
-                  <Border Grid.Column="2" Style="{StaticResource Tag}" Background="{DynamicResource Accent}" Margin="0"
-                          Visibility="{Binding HasBadge, Converter={StaticResource BoolToVis}}">
-                    <TextBlock Text="{Binding BadgeText}" Style="{StaticResource TagText}" Foreground="{DynamicResource OnAccent}" />
-                  </Border>
-                </Grid>
-              </Button>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <ScrollViewer Grid.Row="1" Margin="0,22,-8,8" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+          <ItemsControl ItemsSource="{Binding NavItems}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <Button Style="{StaticResource NavButton}" Tag="{Binding IsSelected}" CommandParameter="{Binding Key}"
+                        Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="30" />
+                      <ColumnDefinition Width="*" />
+                      <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding Glyph}" FontFamily="{StaticResource IconFont}" FontSize="16" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="{Binding Title}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <Border Grid.Column="2" Style="{StaticResource Tag}" Background="{DynamicResource Accent}" Margin="0"
+                            Visibility="{Binding HasBadge, Converter={StaticResource BoolToVis}}">
+                      <TextBlock Text="{Binding BadgeText}" Style="{StaticResource TagText}" Foreground="{DynamicResource OnAccent}" />
+                    </Border>
+                  </Grid>
+                </Button>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
 
         <StackPanel Grid.Row="2">
           <Button Content="{Binding ModeButtonText}" Command="{Binding ToggleModeCommand}" Style="{StaticResource GhostButton}"
