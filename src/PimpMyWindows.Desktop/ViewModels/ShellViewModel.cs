@@ -68,6 +68,7 @@ public sealed class ShellViewModel : ObservableObject
         PcPageViewModel pc,
         DriversPageViewModel drivers,
         DisksPageViewModel disks,
+        TestsPageViewModel tests,
         UndoPageViewModel undoPage,
         AboutPageViewModel about,
         UndoCenterService undo,
@@ -97,6 +98,7 @@ public sealed class ShellViewModel : ObservableObject
             new NavItemViewModel(pc, "Meu PC", "\uE7F8"),
             new NavItemViewModel(drivers, "Drivers", "\uE772"),
             new NavItemViewModel(disks, "Discos", "\uEDA2"),
+            new NavItemViewModel(tests, "Testes", "\uE9D9"),
             _undoItem,
             new NavItemViewModel(about, "Sobre", ""),
         ];

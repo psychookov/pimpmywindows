@@ -1,5 +1,6 @@
 using System.IO;
 using System.Windows;
+using PimpMyWindows.Core.Benchmarks;
 using PimpMyWindows.Core.Diagnostics;
 using PimpMyWindows.Core.Platform;
 using PimpMyWindows.Core.Safety;
@@ -87,6 +88,13 @@ public partial class App : Application
         var pcPage = new PcPageViewModel(hardwareService, driverService, diskService, appState, prompt, _log);
         var driversPage = new DriversPageViewModel(driverService, driverBackup, fileDialogs, prompt, appState, _log);
         var disksPage = new DisksPageViewModel(diskService, prompt, appState, _log);
+        var testsPage = new TestsPageViewModel(
+            new BenchmarkHistoryStore(Path.Combine(dataDirectory, "benchmarks.json")),
+            new NetworkTester(new WindowsNetworkProbe()),
+            new BatteryService(wmi),
+            prompt,
+            appState,
+            _log);
         var undoPage = new UndoPageViewModel(undo, prompt, appState);
         var aboutPage = new AboutPageViewModel(dataDirectory, machineBackupsDirectory, prompt);
 
@@ -121,7 +129,7 @@ public partial class App : Application
                 }));
 
         shell = new ShellViewModel(
-            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, undoPage, aboutPage, undo,
+            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, undoPage, aboutPage, undo,
             appState, prompt, _log, themeController, restore, isAdministrator, environment.Description);
         var viewModel = shell;
 
