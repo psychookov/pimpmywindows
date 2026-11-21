@@ -30,7 +30,8 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 ## v0.3 — Mais recursos nativos
 
 - [x] Meu PC, Drivers (inventário, backup e restauração) e saúde dos discos
-- [ ] Benchmarks (CPU, memória, disco), teste de rede e bateria
+- [x] Benchmarks (CPU, memória, disco) com comparação com o teste anterior, teste de rede e bateria
+- [ ] Teste de estresse (CPU e memória, com limite de tempo) e teste de controle de videogame
 - [ ] Jogos: biblioteca, Modo Jogo por jogo e teste de controle
 
 - Serviços do Windows (lista, explicação e desativar só os seguros, sempre reversível)

@@ -11,7 +11,7 @@ Existem ótimos scripts de otimização para quem já entende de Windows, como o
 - **Você vê o que está ativo** no seu Windows e decide o que ligar ou desligar.
 - **Cada ajuste é explicado** em linguagem simples: o que faz, o que muda, o que se perde, se precisa reiniciar e qual o nível de risco.
 - **Tudo é reversível.** Antes de qualquer mudança, o programa guarda o valor que você tinha e devolve exatamente esse valor ao reverter.
-- **Só recursos nativos**: registro do Windows e comandos oficiais. Nada é baixado e nenhum dado sai do seu computador.
+- **Só recursos nativos**: registro do Windows e comandos oficiais. Nada é baixado e nenhum dado seu sai do computador (a única exceção é o teste de rede, que só roda quando você clica e avisa o que faz).
 
 ## O que o programa já faz
 
@@ -59,6 +59,7 @@ O catálogo tem hoje **24 ajustes**: 20 no Modo Básico e 4 no Modo Técnico. To
 - **Meu PC**: Windows, placa-mãe, processador, memória e vídeo, com um botão que copia um resumo para pedir ajuda, sem nome, nome do PC nem números de série.
 - **Drivers**: lista os drivers instalados, destaca aparelhos com problema e drivers antigos de vídeo, rede, áudio e Bluetooth. Faz **backup e restauração** de todos os drivers pelo `pnputil` (a restauração só aceita pastas criadas pelo programa) e abre o Windows Update. Não baixa drivers de site nenhum.
 - **Saúde dos discos**: estado, desgaste, temperatura e erros de cada HD/SSD pelas APIs de armazenamento do Windows. Só leitura.
+- **Testes**: benchmarks de processador, memória e disco, **sempre comparados com o teste anterior** do mesmo computador (para ver se um ajuste ajudou de verdade), teste de rede (latência, variação, perda de pacotes e DNS) e estado e desgaste da bateria. O teste de disco usa um arquivo temporário próprio e o apaga no fim.
 - **Modo Básico e Modo Técnico**: o programa abre sempre no Básico. O Técnico mostra ajustes avançados e pede confirmação para ser ativado.
 - **Ajustes sob medida para o seu Windows**: cada ajuste declara em quais builds existe; o programa esconde o que não vale e o motor se recusa a aplicar fora da faixa.
 - **Níveis de risco** (Seguro, Moderado, Avançado) e avisos sobre o que se perde.
@@ -113,7 +114,7 @@ Os testes também checam regras do catálogo: IDs únicos, valor otimizado difer
 - **Release publicada** (`.exe` pronto para baixar).
 - **Validação em Windows real**: cada ajuste ainda precisa ser aplicado, conferido e revertido em máquina virtual.
 - **Lembrar o Modo Técnico** entre execuções: de propósito, o programa sempre abre no Básico. (O tema escolhido é lembrado.)
-- Benchmarks, teste de rede, bateria, jogos (biblioteca e Modo Jogo) e teste de controle.
+- Jogos (biblioteca e Modo Jogo) e teste de controle.
 - Serviços do Windows, tarefas agendadas, plano de energia, DNS sobre HTTPS e limpeza de temporários.
 - Remoção de aplicativos pré-instalados (decisão de projeto em aberto, por não ser 100% reversível).
 

@@ -29,6 +29,10 @@ O objetivo do Pimp my Windows é deixar o Windows mais enxuto **sem criar risco*
 
 Os testes do catálogo bloqueiam automaticamente ajustes em chaves sensíveis (`TweakCatalogTests`).
 
+## Teste de rede (a única exceção)
+
+O programa não envia dados seus. O **teste de rede** é a única função que fala com a internet, e só roda quando você clica, depois de uma confirmação que diz o que será feito: alguns pings ao seu roteador e aos servidores públicos 1.1.1.1 (Cloudflare) e 8.8.8.8 (Google), e a consulta do nome de `microsoft.com`, `google.com` e `wikipedia.org`. Esses servidores veem o endereço IP da sua conexão, como em qualquer acesso à internet. Nada é baixado.
+
 ## Níveis de risco
 
 - **Seguro**: muda aparência ou conforto, é trivial de reverter e não tira funcionalidade importante.
