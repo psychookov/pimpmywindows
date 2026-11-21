@@ -334,6 +334,9 @@
       <DataTrigger Binding="{Binding SeverityKey}" Value="Info">
         <Setter Property="Background" Value="{DynamicResource InfoBg}" />
       </DataTrigger>
+      <DataTrigger Binding="{Binding SeverityKey}" Value="Bad">
+        <Setter Property="Background" Value="{DynamicResource DangerBg}" />
+      </DataTrigger>
     </Style.Triggers>
   </Style>
 
@@ -349,6 +352,9 @@
       </DataTrigger>
       <DataTrigger Binding="{Binding SeverityKey}" Value="Info">
         <Setter Property="Foreground" Value="{DynamicResource Info}" />
+      </DataTrigger>
+      <DataTrigger Binding="{Binding SeverityKey}" Value="Bad">
+        <Setter Property="Foreground" Value="{DynamicResource Danger}" />
       </DataTrigger>
     </Style.Triggers>
   </Style>

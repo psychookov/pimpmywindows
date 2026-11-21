@@ -1,5 +1,6 @@
 using System.IO;
 using System.Windows;
+using PimpMyWindows.Core.Diagnostics;
 using PimpMyWindows.Core.Platform;
 using PimpMyWindows.Core.Safety;
 using PimpMyWindows.Core.Settings;
@@ -73,9 +74,19 @@ public partial class App : Application
 
         _log.Write($"Pimp my Windows iniciado em {environment.Description}. Administrador: {isAdministrator}.");
 
+        var fileDialogs = new WindowsFileDialogs();
         var tweaksPage = new TweaksPageViewModel(
-            TweakCatalog.All, engine, planner, runner, restore, prompt, new WindowsFileDialogs(), appState, _log, windowsBuild);
+            TweakCatalog.All, engine, planner, runner, restore, prompt, fileDialogs, appState, _log, windowsBuild);
         var startupPage = new StartupPageViewModel(startup, prompt, appState);
+
+        var wmi = new WmiSystemQuery();
+        var hardwareService = new HardwareService(wmi);
+        var driverService = new DriverService(wmi);
+        var diskService = new DiskHealthService(wmi);
+        var driverBackup = new DriverBackupService(new WindowsProcessRunner(), IsAdministrator, _log);
+        var pcPage = new PcPageViewModel(hardwareService, driverService, diskService, appState, prompt, _log);
+        var driversPage = new DriversPageViewModel(driverService, driverBackup, fileDialogs, prompt, appState, _log);
+        var disksPage = new DisksPageViewModel(diskService, prompt, appState, _log);
         var undoPage = new UndoPageViewModel(undo, prompt, appState);
         var aboutPage = new AboutPageViewModel(dataDirectory, machineBackupsDirectory, prompt);
 
@@ -110,7 +121,7 @@ public partial class App : Application
                 }));
 
         shell = new ShellViewModel(
-            overview, tweaksPage, startupPage, undoPage, aboutPage, undo,
+            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, undoPage, aboutPage, undo,
             appState, prompt, _log, themeController, restore, isAdministrator, environment.Description);
         var viewModel = shell;
 

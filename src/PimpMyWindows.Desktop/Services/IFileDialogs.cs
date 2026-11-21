@@ -7,6 +7,8 @@ public interface IFileDialogs
     string? PickSavePath(string title, string defaultFileName);
 
     string? PickOpenPath(string title);
+
+    string? PickFolder(string title);
 }
 
 public sealed class WindowsFileDialogs : IFileDialogs
@@ -23,5 +25,11 @@ public sealed class WindowsFileDialogs : IFileDialogs
     {
         var dialog = new OpenFileDialog { Title = title, Filter = Filter, CheckFileExists = true };
         return dialog.ShowDialog() == true ? dialog.FileName : null;
+    }
+
+    public string? PickFolder(string title)
+    {
+        var dialog = new OpenFolderDialog { Title = title };
+        return dialog.ShowDialog() == true ? dialog.FolderName : null;
     }
 }
