@@ -12,7 +12,7 @@ public static class ThemeManager
     private static readonly Dictionary<string, string> Dark = new()
     {
         ["SidebarBg"] = "#0E141B", ["Surface"] = "#121820", ["SurfaceAlt"] = "#17202A", ["SurfaceHover"] = "#1B2733",
-        ["Line"] = "#1E2833", ["Text"] = "#E8EEF4", ["Muted"] = "#8A97A6", ["Accent"] = "#19D3A2",
+        ["Line"] = "#1E2833", ["Text"] = "#E8EEF4", ["Muted"] = "#9AA7B6", ["Accent"] = "#19D3A2",
         ["AccentHover"] = "#3BE8B8", ["OnAccent"] = "#04110D", ["AccentSoft"] = "#0F3A33", ["Success"] = "#3DDC97",
         ["SuccessBg"] = "#12332A", ["Warning"] = "#F5B63D", ["WarningBg"] = "#3A2E12", ["Danger"] = "#FF6B6B",
         ["DangerBg"] = "#3A1A1C", ["Info"] = "#5CB8FF", ["InfoBg"] = "#12293D", ["ToggleOff"] = "#3A4756",
