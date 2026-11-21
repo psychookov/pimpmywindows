@@ -56,6 +56,9 @@ O catálogo tem hoje **24 ajustes**: 20 no Modo Básico e 4 no Modo Técnico. To
 - **Central Desfazer**: tudo o que o programa já alterou, com botão para desfazer um, vários ou todos. Se o Windows desfez algo por conta própria (atualização), o programa avisa.
 - **Perfis prontos** (Privacidade, Jogos, Conforto) e **exportar/importar** a sua seleção em um arquivo, para levar a mesma configuração a outro computador.
 - **Programas na inicialização**: registro **e** pasta Inicializar, com o mesmo mecanismo do Gerenciador de Tarefas. Mostra a descrição do programa e destaca entradas que apontam para programas que não existem mais. Nada é desinstalado nem apagado.
+- **Meu PC**: Windows, placa-mãe, processador, memória e vídeo, com um botão que copia um resumo para pedir ajuda, sem nome, nome do PC nem números de série.
+- **Drivers**: lista os drivers instalados, destaca aparelhos com problema e drivers antigos de vídeo, rede, áudio e Bluetooth. Faz **backup e restauração** de todos os drivers pelo `pnputil` (a restauração só aceita pastas criadas pelo programa) e abre o Windows Update. Não baixa drivers de site nenhum.
+- **Saúde dos discos**: estado, desgaste, temperatura e erros de cada HD/SSD pelas APIs de armazenamento do Windows. Só leitura.
 - **Modo Básico e Modo Técnico**: o programa abre sempre no Básico. O Técnico mostra ajustes avançados e pede confirmação para ser ativado.
 - **Ajustes sob medida para o seu Windows**: cada ajuste declara em quais builds existe; o programa esconde o que não vale e o motor se recusa a aplicar fora da faixa.
 - **Níveis de risco** (Seguro, Moderado, Avançado) e avisos sobre o que se perde.
@@ -110,6 +113,7 @@ Os testes também checam regras do catálogo: IDs únicos, valor otimizado difer
 - **Release publicada** (`.exe` pronto para baixar).
 - **Validação em Windows real**: cada ajuste ainda precisa ser aplicado, conferido e revertido em máquina virtual.
 - **Lembrar o Modo Técnico** entre execuções: de propósito, o programa sempre abre no Básico. (O tema escolhido é lembrado.)
+- Benchmarks, teste de rede, bateria, jogos (biblioteca e Modo Jogo) e teste de controle.
 - Serviços do Windows, tarefas agendadas, plano de energia, DNS sobre HTTPS e limpeza de temporários.
 - Remoção de aplicativos pré-instalados (decisão de projeto em aberto, por não ser 100% reversível).
 
