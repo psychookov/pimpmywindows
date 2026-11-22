@@ -2,7 +2,7 @@
 
 Aplicativo **de código aberto**, feito no Brasil, para otimizar o Windows 10 e o Windows 11 com **segurança** e **clareza**, usando apenas recursos nativos do sistema e uma interface em português pensada para quem **não é técnico**. Quem é, tem um Modo Técnico.
 
-> **Status: v0.1, em desenvolvimento.** O código compila e os testes automáticos passam no GitHub Actions (Windows), mas **ainda não há versão publicada** e os ajustes **ainda não foram validados em um Windows real**. Veja [o que ainda falta](#o-que-ainda-não-existe).
+> **Status: v0.1, em desenvolvimento.** O código compila e os testes automáticos passam no GitHub Actions (Windows). A interface já foi aberta e usada em uma máquina virtual pelo autor, sem problemas, mas **ainda não há versão publicada** e **falta a validação ajuste a ajuste** em um Windows real. Veja [o que ainda falta](#o-que-ainda-não-existe).
 
 ## A ideia
 
@@ -60,7 +60,7 @@ O catálogo tem hoje **24 ajustes**: 20 no Modo Básico e 4 no Modo Técnico. To
 - **Drivers**: lista os drivers instalados, destaca aparelhos com problema e drivers antigos de vídeo, rede, áudio e Bluetooth. Faz **backup e restauração** de todos os drivers pelo `pnputil` (a restauração só aceita pastas criadas pelo programa) e abre o Windows Update. Não baixa drivers de site nenhum.
 - **Saúde dos discos**: estado, desgaste, temperatura e erros de cada HD/SSD pelas APIs de armazenamento do Windows. Só leitura.
 - **Testes**: benchmarks de processador, memória e disco, **sempre comparados com o teste anterior** do mesmo computador (para ver se um ajuste ajudou de verdade), teste de rede (latência, variação, perda de pacotes e DNS) e estado e desgaste da bateria. O teste de disco usa um arquivo temporário próprio e o apaga no fim.
-- **Jogos**: acha os jogos da Steam, Epic Games e GOG lendo só os arquivos dos próprios lançadores (você também pode adicionar um .exe à mão) e oferece, **para cada jogo**, usar a placa de vídeo dedicada e, no Modo Técnico, desativar as otimizações de tela inteira. Passa pela mesma prévia, backup e Central Desfazer dos outros ajustes.
+- **Jogos** (novo): acha os jogos da Steam, Epic Games e GOG lendo só os arquivos dos próprios lançadores (você também pode adicionar um .exe à mão) e oferece, **para cada jogo**, usar a placa de vídeo dedicada e, no Modo Técnico, desativar as otimizações de tela inteira. Passa pela mesma prévia, backup e Central Desfazer dos outros ajustes.
 - **Modo Básico e Modo Técnico**: o programa abre sempre no Básico. O Técnico mostra ajustes avançados e pede confirmação para ser ativado.
 - **Ajustes sob medida para o seu Windows**: cada ajuste declara em quais builds existe; o programa esconde o que não vale e o motor se recusa a aplicar fora da faixa.
 - **Níveis de risco** (Seguro, Moderado, Avançado) e avisos sobre o que se perde.
@@ -102,20 +102,23 @@ dotnet run --project src/PimpMyWindows.Desktop
 ## Estrutura
 
 ```
-src/PimpMyWindows.Core      Motor: ajustes, prévia (planner), lote, backup, Central Desfazer, inicialização (sem interface)
+src/PimpMyWindows.Core      Motor e serviços, sem interface: ajustes, prévia (planner), lote, backup, Central Desfazer,
+                            inicialização, diagnósticos (PC, drivers, discos), benchmarks e jogos
 src/PimpMyWindows.Desktop   Interface WPF (MVVM)
 tests/                      Testes do Core (rodam com um registro falso, sem tocar no seu Windows)
 docs/                       Segurança, arquitetura e roadmap
 ```
+
+Além dos 24 ajustes do catálogo, a página Jogos cria ajustes por jogo na hora, com o mesmo motor.
 
 Os testes também checam regras do catálogo: IDs únicos, valor otimizado diferente do padrão, administrador exigido só quando o ajuste mexe em `HKLM`, nenhuma chave de segurança (Defender, firewall, Windows Update) e ajuste "Avançado" só no Modo Técnico.
 
 ## O que ainda não existe
 
 - **Release publicada** (`.exe` pronto para baixar).
-- **Validação em Windows real**: cada ajuste ainda precisa ser aplicado, conferido e revertido em máquina virtual.
+- **Validação completa em Windows real**: cada ajuste, e as leituras de discos e drivers, ainda precisam ser conferidos um a um em máquina virtual e em hardware de verdade.
 - **Lembrar o Modo Técnico** entre execuções: de propósito, o programa sempre abre no Básico. (O tema escolhido é lembrado.)
-- Jogos (biblioteca e Modo Jogo) e teste de controle.
+- Teste de controle de videogame (XInput) e teste de estresse de CPU e memória.
 - Serviços do Windows, tarefas agendadas, plano de energia, DNS sobre HTTPS e limpeza de temporários.
 - Remoção de aplicativos pré-instalados (decisão de projeto em aberto, por não ser 100% reversível).
 
