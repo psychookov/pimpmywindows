@@ -35,9 +35,12 @@ public class ControllerTests
     }
 
     [Fact]
-    public void Drift_UsesTheWorstMomentNotTheAverage() =>
-        Assert.Equal(DriftVerdict.Drifting, ControllerAnalysis.EvaluateDrift(
-            Enumerable.Repeat(((short)0, (short)0), 50).Append((9000, 0))).Verdict);
+    public void Drift_UsesTheWorstMomentNotTheAverage()
+    {
+        var samples = Enumerable.Repeat(((short)0, (short)0), 50).ToList();
+        samples.Add(((short)9000, (short)0));
+        Assert.Equal(DriftVerdict.Drifting, ControllerAnalysis.EvaluateDrift(samples).Verdict);
+    }
 
     [Fact]
     public void Drift_NoSamplesIsGoodAndDoesNotThrow() =>
