@@ -63,7 +63,8 @@
       <Grid>
         <CheckBox Style="{StaticResource FlatCheck}" IsChecked="{Binding CreateRestorePoint, Mode=TwoWay}"
                   Content="Criar um ponto de restauração antes (recomendado)" VerticalAlignment="Center"
-                  Foreground="{DynamicResource Text}" />
+                  Foreground="{DynamicResource Text}"
+                  Visibility="{Binding OfferRestorePoint, Converter={StaticResource BoolToVis}}" />
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
           <Button Content="Cancelar" Style="{StaticResource GhostButton}" IsCancel="True" Margin="0,0,10,0" Click="OnCancel" />
           <Button Content="Aplicar agora" Style="{StaticResource PrimaryButton}" IsDefault="True" Click="OnConfirm" />

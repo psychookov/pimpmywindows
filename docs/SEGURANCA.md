@@ -33,6 +33,10 @@ Os testes do catálogo bloqueiam automaticamente ajustes em chaves sensíveis (`
 
 O programa não envia dados seus. O **teste de rede** é a única função que fala com a internet, e só roda quando você clica, depois de uma confirmação que diz o que será feito: alguns pings ao seu roteador e aos servidores públicos 1.1.1.1 (Cloudflare) e 8.8.8.8 (Google), e a consulta do nome de `microsoft.com`, `google.com` e `wikipedia.org`. Esses servidores veem o endereço IP da sua conexão, como em qualquer acesso à internet. Nada é baixado.
 
+## Jogos
+
+A página **Jogos** só lê os arquivos que Steam, Epic e GOG já mantêm (listas de bibliotecas, manifestos e chaves do registro) e não instala, baixa nem envia nada. Os ajustes por jogo gravam apenas valores do usuário atual (`HKCU`) cujo nome é o caminho do executável daquele jogo, passam pela prévia e têm backup. A lista de jogos que você adicionou ou otimizou fica em `%LOCALAPPDATA%\PimpMyWindows\games.json`, para a Central Desfazer continuar reconhecendo os ajustes mesmo se o jogo for desinstalado; um arquivo adulterado é ignorado se o id não bater com o executável.
+
 ## Níveis de risco
 
 - **Seguro**: muda aparência ou conforto, é trivial de reverter e não tira funcionalidade importante.

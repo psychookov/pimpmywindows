@@ -9,6 +9,8 @@ public interface IFileDialogs
     string? PickOpenPath(string title);
 
     string? PickFolder(string title);
+
+    string? PickExecutable(string title);
 }
 
 public sealed class WindowsFileDialogs : IFileDialogs
@@ -24,6 +26,17 @@ public sealed class WindowsFileDialogs : IFileDialogs
     public string? PickOpenPath(string title)
     {
         var dialog = new OpenFileDialog { Title = title, Filter = Filter, CheckFileExists = true };
+        return dialog.ShowDialog() == true ? dialog.FileName : null;
+    }
+
+    public string? PickExecutable(string title)
+    {
+        var dialog = new OpenFileDialog
+        {
+            Title = title,
+            Filter = "Programas (*.exe)|*.exe",
+            CheckFileExists = true,
+        };
         return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
 

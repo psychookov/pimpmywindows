@@ -70,6 +70,13 @@ public sealed class WindowsRegistryAccess : IRegistryAccess
         return key?.GetValueNames() ?? [];
     }
 
+    public IReadOnlyList<string> GetSubKeyNames(RegistryRoot root, string subKey)
+    {
+        using var baseKey = OpenBase(root);
+        using var key = baseKey.OpenSubKey(subKey, writable: false);
+        return key?.GetSubKeyNames() ?? [];
+    }
+
     private static RegistryKey OpenBase(RegistryRoot root) => RegistryKey.OpenBaseKey(
         root == RegistryRoot.CurrentUser ? RegistryHive.CurrentUser : RegistryHive.LocalMachine,
         RegistryView.Registry64);

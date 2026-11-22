@@ -60,6 +60,7 @@ O catálogo tem hoje **24 ajustes**: 20 no Modo Básico e 4 no Modo Técnico. To
 - **Drivers**: lista os drivers instalados, destaca aparelhos com problema e drivers antigos de vídeo, rede, áudio e Bluetooth. Faz **backup e restauração** de todos os drivers pelo `pnputil` (a restauração só aceita pastas criadas pelo programa) e abre o Windows Update. Não baixa drivers de site nenhum.
 - **Saúde dos discos**: estado, desgaste, temperatura e erros de cada HD/SSD pelas APIs de armazenamento do Windows. Só leitura.
 - **Testes**: benchmarks de processador, memória e disco, **sempre comparados com o teste anterior** do mesmo computador (para ver se um ajuste ajudou de verdade), teste de rede (latência, variação, perda de pacotes e DNS) e estado e desgaste da bateria. O teste de disco usa um arquivo temporário próprio e o apaga no fim.
+- **Jogos**: acha os jogos da Steam, Epic Games e GOG lendo só os arquivos dos próprios lançadores (você também pode adicionar um .exe à mão) e oferece, **para cada jogo**, usar a placa de vídeo dedicada e, no Modo Técnico, desativar as otimizações de tela inteira. Passa pela mesma prévia, backup e Central Desfazer dos outros ajustes.
 - **Modo Básico e Modo Técnico**: o programa abre sempre no Básico. O Técnico mostra ajustes avançados e pede confirmação para ser ativado.
 - **Ajustes sob medida para o seu Windows**: cada ajuste declara em quais builds existe; o programa esconde o que não vale e o motor se recusa a aplicar fora da faixa.
 - **Níveis de risco** (Seguro, Moderado, Avançado) e avisos sobre o que se perde.

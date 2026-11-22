@@ -36,9 +36,15 @@ public sealed class PlanPreviewModel
     /// <summary>Marcado pelo usuário na janela: criar ponto de restauração antes de aplicar.</summary>
     public bool CreateRestorePoint { get; set; }
 
+    /// <summary>Falso quando quem chama não cria ponto de restauração (some a caixa na janela).</summary>
+    public bool OfferRestorePoint { get; init; } = true;
+
     public bool HasRestartText => RestartText.Length > 0;
 
-    public static PlanPreviewModel From(IReadOnlyList<TweakPlan> plans, bool createRestorePointDefault)
+    public static PlanPreviewModel From(
+        IReadOnlyList<TweakPlan> plans,
+        bool createRestorePointDefault,
+        bool offerRestorePoint = true)
     {
         var items = plans.Select(ToItem).ToList();
         var runnable = plans.Count(p => !p.IsBlocked && !p.IsNoOp);
@@ -66,7 +72,8 @@ public sealed class PlanPreviewModel
                 RestartRequirement.SignOut => "Para valer por completo, será preciso sair e entrar no Windows.",
                 _ => string.Empty,
             },
-            CreateRestorePoint = createRestorePointDefault,
+            CreateRestorePoint = createRestorePointDefault && offerRestorePoint,
+            OfferRestorePoint = offerRestorePoint,
         };
     }
 

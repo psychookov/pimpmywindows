@@ -17,4 +17,7 @@ public interface IRegistryAccess
 
     /// <summary>Lista os nomes dos valores de uma chave (vazio se a chave não existir).</summary>
     IReadOnlyList<string> GetValueNames(RegistryRoot root, string subKey);
+
+    /// <summary>Lista os nomes das subchaves imediatas de uma chave (vazio se a chave não existir).</summary>
+    IReadOnlyList<string> GetSubKeyNames(RegistryRoot root, string subKey);
 }
