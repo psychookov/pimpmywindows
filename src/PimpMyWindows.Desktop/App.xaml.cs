@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows;
 using PimpMyWindows.Core.Benchmarks;
 using PimpMyWindows.Core.Diagnostics;
+using PimpMyWindows.Core.Games;
 using PimpMyWindows.Core.Platform;
 using PimpMyWindows.Core.Safety;
 using PimpMyWindows.Core.Settings;
@@ -66,7 +67,9 @@ public partial class App : Application
         var planner = new TweakPlanner(registry, backups, IsAdministrator, () => windowsBuild);
         var runner = new TweakBatchRunner(engine, _log);
         var startup = new StartupService(registry, IsAdministrator, _log, files: new WindowsStartupFileSystem());
-        var undo = new UndoCenterService(backups, engine, TweakCatalog.All, _log);
+        var gameStore = new ManagedGameStore(Path.Combine(dataDirectory, "games.json"));
+        var undo = new UndoCenterService(
+            backups, engine, () => TweakCatalog.All.Concat(gameStore.AllTweaks()).ToList(), _log);
         var restorePoints = new RestorePointService(IsAdministrator, _log);
 
         var appState = new AppState();
@@ -95,6 +98,20 @@ public partial class App : Application
             prompt,
             appState,
             _log);
+        var gamesPage = new GamesPageViewModel(
+            new GameDetector(
+                registry,
+                new WindowsGameFileSystem(),
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)),
+            gameStore,
+            engine,
+            planner,
+            runner,
+            fileDialogs,
+            prompt,
+            appState,
+            _log,
+            windowsBuild);
         var undoPage = new UndoPageViewModel(undo, prompt, appState);
         var aboutPage = new AboutPageViewModel(dataDirectory, machineBackupsDirectory, prompt);
 
@@ -129,7 +146,7 @@ public partial class App : Application
                 }));
 
         shell = new ShellViewModel(
-            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, undoPage, aboutPage, undo,
+            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, gamesPage, undoPage, aboutPage, undo,
             appState, prompt, _log, themeController, restore, isAdministrator, environment.Description);
         var viewModel = shell;
 

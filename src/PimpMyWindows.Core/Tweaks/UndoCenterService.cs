@@ -17,13 +17,26 @@ public sealed class UndoCenterService
 {
     private readonly IBackupStore _backups;
     private readonly TweakEngine _engine;
-    private readonly IReadOnlyList<TweakDefinition> _catalog;
+    private readonly Func<IReadOnlyList<TweakDefinition>> _catalog;
     private readonly IActionLog _log;
 
     public UndoCenterService(
         IBackupStore backups,
         TweakEngine engine,
         IReadOnlyList<TweakDefinition> catalog,
+        IActionLog log)
+        : this(backups, engine, () => catalog, log)
+    {
+    }
+
+    /// <summary>
+    /// O catálogo vem de uma função porque há ajustes criados em tempo de execução
+    /// (os de cada jogo), que precisam continuar aparecendo aqui mesmo depois de fechar o programa.
+    /// </summary>
+    public UndoCenterService(
+        IBackupStore backups,
+        TweakEngine engine,
+        Func<IReadOnlyList<TweakDefinition>> catalog,
         IActionLog log)
     {
         _backups = backups;
@@ -45,8 +58,9 @@ public sealed class UndoCenterService
             return [];
         }
 
+        var catalog = _catalog();
         return all
-            .Select(b => (Backup: b, Tweak: _catalog.FirstOrDefault(t => t.Id == b.TweakId)))
+            .Select(b => (Backup: b, Tweak: catalog.FirstOrDefault(t => t.Id == b.TweakId)))
             .Where(x => x.Tweak is not null)
             .Select(x => new UndoEntry(x.Tweak!, x.Backup.CreatedAt, _engine.GetState(x.Tweak!)))
             .OrderByDescending(e => e.AppliedAt)

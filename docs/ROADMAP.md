@@ -31,8 +31,9 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 
 - [x] Meu PC, Drivers (inventário, backup e restauração) e saúde dos discos
 - [x] Benchmarks (CPU, memória, disco) com comparação com o teste anterior, teste de rede e bateria
-- [ ] Teste de estresse (CPU e memória, com limite de tempo) e teste de controle de videogame
-- [ ] Jogos: biblioteca, Modo Jogo por jogo e teste de controle
+- [x] Jogos: biblioteca (Steam, Epic, GOG e manual) e ajustes por jogo (placa de vídeo dedicada, tela inteira)
+- [ ] Teste de controle de videogame (XInput)
+- [ ] Teste de estresse (CPU e memória, com limite de tempo)
 
 - Serviços do Windows (lista, explicação e desativar só os seguros, sempre reversível)
 - Tarefas agendadas de telemetria

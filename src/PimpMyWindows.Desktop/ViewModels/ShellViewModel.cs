@@ -69,6 +69,7 @@ public sealed class ShellViewModel : ObservableObject
         DriversPageViewModel drivers,
         DisksPageViewModel disks,
         TestsPageViewModel tests,
+        GamesPageViewModel games,
         UndoPageViewModel undoPage,
         AboutPageViewModel about,
         UndoCenterService undo,
@@ -99,6 +100,7 @@ public sealed class ShellViewModel : ObservableObject
             new NavItemViewModel(drivers, "Drivers", "\uE772"),
             new NavItemViewModel(disks, "Discos", "\uEDA2"),
             new NavItemViewModel(tests, "Testes", "\uE9D9"),
+            new NavItemViewModel(games, "Jogos", "\uE7FC"),
             _undoItem,
             new NavItemViewModel(about, "Sobre", ""),
         ];

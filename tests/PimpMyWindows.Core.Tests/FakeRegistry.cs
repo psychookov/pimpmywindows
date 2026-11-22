@@ -30,6 +30,16 @@ internal sealed class FakeRegistry : IRegistryAccess
     public IReadOnlyList<string> GetValueNames(RegistryRoot root, string subKey) =>
         _values.Keys.Where(k => k.Root == root && k.SubKey == subKey).Select(k => k.ValueName).ToList();
 
+    public IReadOnlyList<string> GetSubKeyNames(RegistryRoot root, string subKey)
+    {
+        var prefix = subKey + "\\";
+        return _values.Keys
+            .Where(k => k.Root == root && k.SubKey.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            .Select(k => k.SubKey[prefix.Length..].Split('\\')[0])
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+    }
+
     public void Seed(RegistryLocation location, RegistryData data) => _values[location] = data;
 }
 
