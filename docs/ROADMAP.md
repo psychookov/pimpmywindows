@@ -10,7 +10,7 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 - [x] Ponto de restauração
 - [x] Interface WPF em português
 - [ ] **Validar no Windows real** (compilar, rodar testes pelo CI e testar cada ajuste em VM)
-- [ ] Primeira release (.exe) pelo GitHub Releases
+- [x] Primeira release (.exe) pelo GitHub Releases (v0.1.0, pré-lançamento). Para publicar outra: mude `RELEASE_VERSION` no main
 
 ## v0.2 — Ver o que está ativo
 
