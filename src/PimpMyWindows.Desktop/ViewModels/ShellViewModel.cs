@@ -70,6 +70,7 @@ public sealed class ShellViewModel : ObservableObject
         DisksPageViewModel disks,
         TestsPageViewModel tests,
         GamesPageViewModel games,
+        ControllerPageViewModel controller,
         UndoPageViewModel undoPage,
         AboutPageViewModel about,
         UndoCenterService undo,
@@ -101,6 +102,7 @@ public sealed class ShellViewModel : ObservableObject
             new NavItemViewModel(disks, "Discos", "\uEDA2"),
             new NavItemViewModel(tests, "Testes", "\uE9D9"),
             new NavItemViewModel(games, "Jogos", "\uE7FC"),
+            new NavItemViewModel(controller, "Teste de controle", "\uE765"),
             _undoItem,
             new NavItemViewModel(about, "Sobre", ""),
         ];
@@ -177,6 +179,11 @@ public sealed class ShellViewModel : ObservableObject
         foreach (var item in NavItems)
         {
             item.IsSelected = ReferenceEquals(item, target);
+        }
+
+        if (!ReferenceEquals(CurrentPage, target.Page))
+        {
+            CurrentPage.OnHidden();
         }
 
         target.Page.OnShown();

@@ -9,4 +9,9 @@ public abstract class PageViewModel : ObservableObject
     public virtual void OnShown()
     {
     }
+
+    /// <summary>Chamado ao sair da página, para ela parar o que estiver rodando em segundo plano.</summary>
+    public virtual void OnHidden()
+    {
+    }
 }

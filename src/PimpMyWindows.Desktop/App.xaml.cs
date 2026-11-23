@@ -1,6 +1,7 @@
 using System.IO;
 using System.Windows;
 using PimpMyWindows.Core.Benchmarks;
+using PimpMyWindows.Core.Controllers;
 using PimpMyWindows.Core.Diagnostics;
 using PimpMyWindows.Core.Games;
 using PimpMyWindows.Core.Platform;
@@ -112,6 +113,7 @@ public partial class App : Application
             appState,
             _log,
             windowsBuild);
+        var controllerPage = new ControllerPageViewModel(new XInputProbe(), appState);
         var undoPage = new UndoPageViewModel(undo, prompt, appState);
         var aboutPage = new AboutPageViewModel(dataDirectory, machineBackupsDirectory, prompt);
 
@@ -146,7 +148,7 @@ public partial class App : Application
                 }));
 
         shell = new ShellViewModel(
-            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, gamesPage, undoPage, aboutPage, undo,
+            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, gamesPage, controllerPage, undoPage, aboutPage, undo,
             appState, prompt, _log, themeController, restore, isAdministrator, environment.Description);
         var viewModel = shell;
 
