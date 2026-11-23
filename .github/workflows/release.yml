@@ -1,8 +1,11 @@
 name: release
 
-# Roda quando uma tag de versão (ex.: v0.1.0) é enviada: compila, testa e publica o .exe no GitHub Releases.
+# Publica o .exe no GitHub Releases quando o arquivo RELEASE_VERSION muda no main (ex.: v0.1.0)
+# ou quando uma tag v* é enviada. O GitHub cria a tag da versão sozinho.
 on:
   push:
+    branches: [main]
+    paths: [RELEASE_VERSION]
     tags: ['v*']
 
 permissions:
@@ -14,29 +17,55 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-dotnet@v4
+      - name: Descobrir a versão
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.ref_type }}" -eq "tag") { $v = "${{ github.ref_name }}" }
+          else { $v = (Get-Content RELEASE_VERSION -Raw).Trim() }
+          if ($v -notmatch '^v\d+\.\d+\.\d+(-[a-z0-9.]+)?$') { throw "Versão inválida: '$v'" }
+          "tag=$v" | Out-File -Append -Encoding ascii $env:GITHUB_OUTPUT
+
+      - name: Ver se a release já existe
+        id: exists
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "${{ steps.version.outputs.tag }}" *> $null
+          $found = ($LASTEXITCODE -eq 0)
+          "found=$($found.ToString().ToLower())" | Out-File -Append -Encoding ascii $env:GITHUB_OUTPUT
+          $global:LASTEXITCODE = 0
+
+      - if: steps.exists.outputs.found == 'false'
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
 
-      - name: Restaurar
+      - if: steps.exists.outputs.found == 'false'
+        name: Restaurar
         run: dotnet restore PimpMyWindows.sln
 
-      - name: Compilar
+      - if: steps.exists.outputs.found == 'false'
+        name: Compilar
         run: dotnet build PimpMyWindows.sln --configuration Release --no-restore
 
-      - name: Testes
+      - if: steps.exists.outputs.found == 'false'
+        name: Testes
         run: dotnet test PimpMyWindows.sln --configuration Release --no-build
 
-      - name: Publicar o executável
+      - if: steps.exists.outputs.found == 'false'
+        name: Publicar o executável
         run: >
           dotnet publish src/PimpMyWindows.Desktop/PimpMyWindows.Desktop.csproj
           --configuration Release --runtime win-x64 --self-contained false
           -p:PublishSingleFile=true -p:DebugType=none --output artifacts/win-x64
 
-      - name: Empacotar
+      - if: steps.exists.outputs.found == 'false'
+        name: Empacotar
         shell: pwsh
         run: |
-          $name = "PimpMyWindows-${{ github.ref_name }}-win-x64"
+          $name = "PimpMyWindows-${{ steps.version.outputs.tag }}-win-x64"
           New-Item -ItemType Directory -Path "pacote/$name" | Out-Null
           Copy-Item artifacts/win-x64/PimpMyWindows.exe "pacote/$name/"
           Copy-Item LICENSE, README.md "pacote/$name/"
@@ -44,12 +73,16 @@ jobs:
           $hash = (Get-FileHash "$name.zip" -Algorithm SHA256).Hash.ToLower()
           "$hash  $name.zip" | Out-File -Encoding ascii "$name.zip.sha256"
 
-      - name: Criar a release
+      - if: steps.exists.outputs.found == 'false'
+        name: Criar a release
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $name = "PimpMyWindows-${{ github.ref_name }}-win-x64"
-          $pre = if ("${{ github.ref_name }}" -like "v0.*") { "--prerelease" } else { "" }
-          gh release create "${{ github.ref_name }}" "$name.zip" "$name.zip.sha256" $pre `
-            --title "Pimp my Windows ${{ github.ref_name }}" --notes-file .github/release-notes.md
+          $tag = "${{ steps.version.outputs.tag }}"
+          $name = "PimpMyWindows-$tag-win-x64"
+          $args = @("release", "create", $tag, "$name.zip", "$name.zip.sha256",
+                    "--target", "${{ github.sha }}", "--title", "Pimp my Windows $tag",
+                    "--notes-file", ".github/release-notes.md")
+          if ($tag -like "v0.*") { $args += "--prerelease" }
+          gh @args
