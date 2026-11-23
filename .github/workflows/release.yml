@@ -1,0 +1,55 @@
+name: release
+
+# Roda quando uma tag de versão (ex.: v0.1.0) é enviada: compila, testa e publica o .exe no GitHub Releases.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restaurar
+        run: dotnet restore PimpMyWindows.sln
+
+      - name: Compilar
+        run: dotnet build PimpMyWindows.sln --configuration Release --no-restore
+
+      - name: Testes
+        run: dotnet test PimpMyWindows.sln --configuration Release --no-build
+
+      - name: Publicar o executável
+        run: >
+          dotnet publish src/PimpMyWindows.Desktop/PimpMyWindows.Desktop.csproj
+          --configuration Release --runtime win-x64 --self-contained false
+          -p:PublishSingleFile=true -p:DebugType=none --output artifacts/win-x64
+
+      - name: Empacotar
+        shell: pwsh
+        run: |
+          $name = "PimpMyWindows-${{ github.ref_name }}-win-x64"
+          New-Item -ItemType Directory -Path "pacote/$name" | Out-Null
+          Copy-Item artifacts/win-x64/PimpMyWindows.exe "pacote/$name/"
+          Copy-Item LICENSE, README.md "pacote/$name/"
+          Compress-Archive -Path "pacote/$name" -DestinationPath "$name.zip"
+          $hash = (Get-FileHash "$name.zip" -Algorithm SHA256).Hash.ToLower()
+          "$hash  $name.zip" | Out-File -Encoding ascii "$name.zip.sha256"
+
+      - name: Criar a release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $name = "PimpMyWindows-${{ github.ref_name }}-win-x64"
+          $pre = if ("${{ github.ref_name }}" -like "v0.*") { "--prerelease" } else { "" }
+          gh release create "${{ github.ref_name }}" "$name.zip" "$name.zip.sha256" $pre `
+            --title "Pimp my Windows ${{ github.ref_name }}" --notes-file .github/release-notes.md
