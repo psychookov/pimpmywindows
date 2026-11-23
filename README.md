@@ -2,7 +2,7 @@
 
 Aplicativo **de código aberto**, feito no Brasil, para otimizar o Windows 10 e o Windows 11 com **segurança** e **clareza**, usando apenas recursos nativos do sistema e uma interface em português pensada para quem **não é técnico**. Quem é, tem um Modo Técnico.
 
-> **Status: v0.1, em desenvolvimento.** O código compila e os testes automáticos passam no GitHub Actions (Windows). A interface já foi aberta e usada em uma máquina virtual pelo autor, sem problemas, mas **ainda não há versão publicada** e **falta a validação ajuste a ajuste** em um Windows real. Veja [o que ainda falta](#o-que-ainda-não-existe).
+> **Status: v0.1, em desenvolvimento.** O código compila e os testes automáticos passam no GitHub Actions (Windows). A interface já foi aberta e usada em uma máquina virtual pelo autor, sem problemas, mas há uma **versão de testes (v0.1.0)** nas Releases e **falta a validação ajuste a ajuste** em um Windows real. Veja [o que ainda falta](#o-que-ainda-não-existe).
 
 ## A ideia
 
@@ -80,13 +80,13 @@ Leia [docs/SEGURANCA.md](docs/SEGURANCA.md). Em resumo:
 5. **Não apaga arquivos, não desinstala programas** e não mexe em antivírus, firewall nem no Windows Update.
 6. Funciona **sem administrador** para a maioria dos ajustes.
 
-## Testar agora
+## Baixar e testar
 
-Ainda não há release. Para experimentar:
+A versão de testes **v0.1.0** está na página de [**Releases**](https://github.com/psychookov/pimpmywindows/releases):
 
-1. Abra a aba [**Actions**](https://github.com/psychookov/pimpmywindows/actions) do repositório e entre na execução mais recente do workflow `build` com sucesso.
-2. Baixe o artefato **PimpMyWindows-win-x64** e extraia.
-3. Execute `PimpMyWindows.exe`. Precisa do [.NET Desktop Runtime 10](https://dotnet.microsoft.com/download) instalado.
+1. Instale o [.NET Desktop Runtime 10](https://dotnet.microsoft.com/download), se ainda não tiver.
+2. Baixe o `.zip` da release, extraia e execute `PimpMyWindows.exe`. O arquivo `.sha256` serve para conferir o download.
+3. O `.exe` **não é assinado digitalmente**, então o SmartScreen do Windows pode avisar sobre "aplicativo não reconhecido".
 
 **Teste de preferência em uma máquina virtual**, e crie um ponto de restauração antes. Se um ajuste não fizer o que promete, abra uma *issue* dizendo qual ajuste e o que você viu.
 
@@ -117,7 +117,7 @@ Os testes também checam regras do catálogo: IDs únicos, valor otimizado difer
 
 ## O que ainda não existe
 
-- **Release publicada** (`.exe` pronto para baixar).
+- **Assinatura digital** do `.exe` (por isso o SmartScreen pode avisar) e uma versão estável (1.0).
 - **Validação completa em Windows real**: cada ajuste, e as leituras de discos e drivers, ainda precisam ser conferidos um a um em máquina virtual e em hardware de verdade.
 - **Lembrar o Modo Técnico** entre execuções: de propósito, o programa sempre abre no Básico. (O tema escolhido é lembrado.)
 - Serviços do Windows, tarefas agendadas, plano de energia, DNS sobre HTTPS e limpeza de temporários.
