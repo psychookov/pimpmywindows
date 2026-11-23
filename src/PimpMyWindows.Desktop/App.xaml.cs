@@ -99,6 +99,7 @@ public partial class App : Application
             prompt,
             appState,
             _log);
+        var stressPage = new StressPageViewModel(prompt, appState, _log);
         var gamesPage = new GamesPageViewModel(
             new GameDetector(
                 registry,
@@ -148,7 +149,7 @@ public partial class App : Application
                 }));
 
         shell = new ShellViewModel(
-            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, gamesPage, controllerPage, undoPage, aboutPage, undo,
+            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, stressPage, gamesPage, controllerPage, undoPage, aboutPage, undo,
             appState, prompt, _log, themeController, restore, isAdministrator, environment.Description);
         var viewModel = shell;
 
