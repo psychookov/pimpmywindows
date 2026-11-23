@@ -60,7 +60,8 @@ O catálogo tem hoje **24 ajustes**: 20 no Modo Básico e 4 no Modo Técnico. To
 - **Drivers**: lista os drivers instalados, destaca aparelhos com problema e drivers antigos de vídeo, rede, áudio e Bluetooth. Faz **backup e restauração** de todos os drivers pelo `pnputil` (a restauração só aceita pastas criadas pelo programa) e abre o Windows Update. Não baixa drivers de site nenhum.
 - **Saúde dos discos**: estado, desgaste, temperatura e erros de cada HD/SSD pelas APIs de armazenamento do Windows. Só leitura.
 - **Testes**: benchmarks de processador, memória e disco, **sempre comparados com o teste anterior** do mesmo computador (para ver se um ajuste ajudou de verdade), teste de rede (latência, variação, perda de pacotes e DNS) e estado e desgaste da bateria. O teste de disco usa um arquivo temporário próprio e o apaga no fim.
-- **Jogos** (novo): acha os jogos da Steam, Epic Games e GOG lendo só os arquivos dos próprios lançadores (você também pode adicionar um .exe à mão) e oferece, **para cada jogo**, usar a placa de vídeo dedicada e, no Modo Técnico, desativar as otimizações de tela inteira. Passa pela mesma prévia, backup e Central Desfazer dos outros ajustes.
+- **Teste de estresse** (novo): coloca todos os núcleos e um bloco de memória para trabalhar por 1, 5 ou 10 minutos e diz se o computador aguentou: queda de desempenho (sinal de aquecimento) e erros de memória. Pede confirmação, tem botão de cancelar, para sozinho se você sair da página e não grava nada no disco.
+- **Jogos**: acha os jogos da Steam, Epic Games e GOG lendo só os arquivos dos próprios lançadores (você também pode adicionar um .exe à mão) e oferece, **para cada jogo**, usar a placa de vídeo dedicada e, no Modo Técnico, desativar as otimizações de tela inteira. Passa pela mesma prévia, backup e Central Desfazer dos outros ajustes.
 - **Teste de controle**: mostra em tempo real botões, gatilhos e direcionais de controles compatíveis com Xbox (XInput), testa a **vibração** e mede o **desvio (drift)** dos direcionais. Só lê o controle. Controles de PlayStation e Switch só aparecem se algum programa, como o Steam Input, os apresentar ao Windows como Xbox.
 - **Modo Básico e Modo Técnico**: o programa abre sempre no Básico. O Técnico mostra ajustes avançados e pede confirmação para ser ativado.
 - **Ajustes sob medida para o seu Windows**: cada ajuste declara em quais builds existe; o programa esconde o que não vale e o motor se recusa a aplicar fora da faixa.
@@ -119,7 +120,6 @@ Os testes também checam regras do catálogo: IDs únicos, valor otimizado difer
 - **Release publicada** (`.exe` pronto para baixar).
 - **Validação completa em Windows real**: cada ajuste, e as leituras de discos e drivers, ainda precisam ser conferidos um a um em máquina virtual e em hardware de verdade.
 - **Lembrar o Modo Técnico** entre execuções: de propósito, o programa sempre abre no Básico. (O tema escolhido é lembrado.)
-- Teste de estresse de CPU e memória.
 - Serviços do Windows, tarefas agendadas, plano de energia, DNS sobre HTTPS e limpeza de temporários.
 - Remoção de aplicativos pré-instalados (decisão de projeto em aberto, por não ser 100% reversível).
 
