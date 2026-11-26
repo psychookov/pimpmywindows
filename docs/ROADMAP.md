@@ -34,12 +34,12 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 - [x] Jogos: biblioteca (Steam, Epic, GOG e manual) e ajustes por jogo (placa de vídeo dedicada, tela inteira)
 - [x] Teste de controle de videogame (XInput): botões, direcionais, gatilhos, vibração e drift
 - [x] Teste de estresse (CPU e memória, com limite de tempo e cancelamento)
+- [x] Limpeza segura de temporários com prévia (só pastas conhecidas, arquivos parados há mais de 1 dia)
 
 - Serviços do Windows (lista, explicação e desativar só os seguros, sempre reversível)
 - Tarefas agendadas de telemetria
 - Plano de energia (alto desempenho / equilibrado) via `powercfg`
 - Recursos opcionais do Windows (lista com explicação, via DISM nativo)
-- Limpeza segura de temporários (somente pastas temporárias conhecidas, com prévia do que será removido)
 
 ## v0.4 — Comunidade BR
 

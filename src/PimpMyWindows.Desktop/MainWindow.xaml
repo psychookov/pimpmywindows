@@ -29,6 +29,9 @@
     <DataTemplate DataType="{x:Type vm:TestsPageViewModel}">
       <views:TestsView />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:CleanupPageViewModel}">
+      <views:CleanupView />
+    </DataTemplate>
     <DataTemplate DataType="{x:Type vm:StressPageViewModel}">
       <views:StressView />
     </DataTemplate>
