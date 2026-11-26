@@ -22,6 +22,14 @@ public static class TweakProfiles
                 "gaming.mouse-accel",
                 "performance.transparency",
             ]),
+        new("notebook", "Notebook",
+            "Menos coisas em segundo plano e efeitos que gastam GPU, para a bateria durar mais e o aparelho esquentar menos. " +
+            "Combine com a página Energia (plano Equilibrado ou Economia na bateria) e com Serviços e tarefas.",
+            [
+                "performance.transparency",
+                "interface.widgets",
+                "privacy.suggestions",
+            ]),
         new("conforto", "Conforto no dia a dia",
             "Deixa o Windows mais direto: extensões visíveis, abertura no Este Computador e menos esperas.",
             [
