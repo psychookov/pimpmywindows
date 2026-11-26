@@ -1,6 +1,7 @@
 using System.IO;
 using System.Windows;
 using PimpMyWindows.Core.Benchmarks;
+using PimpMyWindows.Core.Cleanup;
 using PimpMyWindows.Core.Controllers;
 using PimpMyWindows.Core.Diagnostics;
 using PimpMyWindows.Core.Games;
@@ -99,6 +100,13 @@ public partial class App : Application
             prompt,
             appState,
             _log);
+        var cleanupPage = new CleanupPageViewModel(
+            new CleanupService(new WindowsCleanupFileSystem(), _log, IsAdministrator),
+            CleanupService.BuildCategories(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                Environment.GetFolderPath(Environment.SpecialFolder.Windows)),
+            prompt,
+            appState);
         var stressPage = new StressPageViewModel(prompt, appState, _log);
         var gamesPage = new GamesPageViewModel(
             new GameDetector(
@@ -149,7 +157,7 @@ public partial class App : Application
                 }));
 
         shell = new ShellViewModel(
-            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, stressPage, gamesPage, controllerPage, undoPage, aboutPage, undo,
+            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, stressPage, cleanupPage, gamesPage, controllerPage, undoPage, aboutPage, undo,
             appState, prompt, _log, themeController, restore, isAdministrator, environment.Description);
         var viewModel = shell;
 
