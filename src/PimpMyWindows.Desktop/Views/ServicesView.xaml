@@ -1,0 +1,73 @@
+<UserControl x:Class="PimpMyWindows.Desktop.Views.ServicesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <UserControl.Resources>
+    <DataTemplate x:Key="ComponentTemplate">
+      <Border Style="{StaticResource Card}">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+          </Grid.ColumnDefinitions>
+          <StackPanel>
+            <WrapPanel>
+              <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center" />
+              <Border Style="{StaticResource RiskBadge}">
+                <TextBlock Text="{Binding RiskText}" Style="{StaticResource RiskBadgeText}" />
+              </Border>
+              <Border Style="{StaticResource Tag}" Margin="8,0,0,0" Visibility="{Binding IsTechnical, Converter={StaticResource BoolToVis}}">
+                <TextBlock Text="Técnico" Style="{StaticResource TagText}" />
+              </Border>
+            </WrapPanel>
+            <TextBlock Text="{Binding Summary}" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" Margin="0,2,0,0" />
+            <TextBlock Text="{Binding StateText}" FontSize="12" Foreground="{DynamicResource Muted}" Margin="0,4,0,0" />
+            <ToggleButton Style="{StaticResource LinkToggle}" IsChecked="{Binding IsExpanded, Mode=TwoWay}"
+                          Margin="0,4,0,0" HorizontalAlignment="Left" Content="Saiba mais / menos" />
+            <StackPanel Margin="0,6,0,0" Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVis}}">
+              <TextBlock Text="{Binding Details}" TextWrapping="Wrap" />
+              <TextBlock Text="{Binding Warning, StringFormat='Atenção: {0}'}" Foreground="{DynamicResource Warning}"
+                         TextWrapping="Wrap" Margin="0,6,0,0" Visibility="{Binding HasWarning, Converter={StaticResource BoolToVis}}" />
+            </StackPanel>
+          </StackPanel>
+          <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0">
+            <Button Content="Desativar" Style="{StaticResource GhostButton}"
+                    Command="{Binding DataContext.ApplyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding}" Visibility="{Binding IsDefault, Converter={StaticResource BoolToVis}}" />
+            <Button Content="Restaurar" Style="{StaticResource GhostButton}"
+                    Command="{Binding DataContext.RevertCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding}" Visibility="{Binding IsOptimized, Converter={StaticResource BoolToVis}}" />
+          </StackPanel>
+        </Grid>
+      </Border>
+    </DataTemplate>
+  </UserControl.Resources>
+
+  <Grid Margin="32,28,32,20">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <StackPanel>
+        <TextBlock Text="Serviços e tarefas" Style="{StaticResource PageTitle}" />
+        <TextBlock Text="Itens de segundo plano do Windows que dá para desativar sem prejuízo para a maioria das pessoas. Só entram aqui itens avaliados, nunca os de segurança ou do Windows Update. Exige administrador; cada um volta ao estado original com “Restaurar”."
+                   Foreground="{DynamicResource Muted}" Margin="0,4,0,0" TextWrapping="Wrap" />
+      </StackPanel>
+      <Button Grid.Column="1" Content="Atualizar" Style="{StaticResource GhostButton}" VerticalAlignment="Center" Command="{Binding RefreshCommand}" />
+    </Grid>
+
+    <ScrollViewer Grid.Row="1" Margin="0,16,-12,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+      <StackPanel Margin="0,0,12,0">
+        <TextBlock Text="Serviços" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+        <ItemsControl ItemsSource="{Binding Services}" ItemTemplate="{StaticResource ComponentTemplate}" />
+        <TextBlock Text="Tarefas agendadas" Style="{StaticResource SectionTitle}" Margin="0,12,0,8" />
+        <ItemsControl ItemsSource="{Binding Tasks}" ItemTemplate="{StaticResource ComponentTemplate}" />
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>
