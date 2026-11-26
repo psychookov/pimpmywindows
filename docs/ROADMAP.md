@@ -22,11 +22,11 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 - [ ] Mais ajustes no Modo Técnico (DNS sobre HTTPS)
 
 - [x] Painel de visão geral: o que já está otimizado, o que não está
-- [x] Perfis prontos (Privacidade, Jogos, Conforto) com pré-seleção segura
+- [x] Perfis prontos (Privacidade, Jogos, Notebook, Conforto) com pré-seleção segura
 - [x] Exportar e importar a seleção (JSON)
 - [x] Busca por ajuste, tema claro/escuro, prévia antes de aplicar e Central Desfazer
 - [x] Página Energia (planos, troca reversível e Desempenho máximo)
-- [ ] Perfil Notebook (pré-seleção de ajustes para quem usa bateria)
+- [x] Perfil Notebook (menos segundo plano e efeitos pesados para a bateria durar mais)
 - [ ] Filtro por categoria e risco
 
 ## v0.3 — Mais recursos nativos

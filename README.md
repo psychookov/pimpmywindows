@@ -54,7 +54,7 @@ O catálogo tem hoje **24 ajustes**: 20 no Modo Básico e 4 no Modo Técnico. To
 - **Painel**: resumo do seu Windows, o percentual do essencial já aplicado (a regra do cálculo é mostrada na tela) e uma lista do que vale a pena olhar.
 - **Prévia antes de aplicar**: você marca vários ajustes, clica em *Revisar e aplicar* e vê, linha por linha, `valor atual → novo valor`. Só então confirma. Há opção de criar um ponto de restauração junto.
 - **Central Desfazer**: tudo o que o programa já alterou, com botão para desfazer um, vários ou todos. Se o Windows desfez algo por conta própria (atualização), o programa avisa.
-- **Perfis prontos** (Privacidade, Jogos, Conforto) e **exportar/importar** a sua seleção em um arquivo, para levar a mesma configuração a outro computador.
+- **Perfis prontos** (Privacidade, Jogos, Notebook, Conforto) e **exportar/importar** a sua seleção em um arquivo, para levar a mesma configuração a outro computador.
 - **Programas na inicialização**: registro **e** pasta Inicializar, com o mesmo mecanismo do Gerenciador de Tarefas. Mostra a descrição do programa e destaca entradas que apontam para programas que não existem mais. Nada é desinstalado nem apagado.
 - **Meu PC**: Windows, placa-mãe, processador, memória e vídeo, com um botão que copia um resumo para pedir ajuda, sem nome, nome do PC nem números de série.
 - **Drivers**: lista os drivers instalados, destaca aparelhos com problema e drivers antigos de vídeo, rede, áudio e Bluetooth. Faz **backup e restauração** de todos os drivers pelo `pnputil` (a restauração só aceita pastas criadas pelo programa) e abre o Windows Update. Não baixa drivers de site nenhum.
