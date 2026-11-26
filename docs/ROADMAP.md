@@ -17,7 +17,7 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 - [x] Ajustes filtrados pela build do Windows (`MinBuild`/`MaxBuild`)
 - [x] Modo Básico e Modo Técnico
 - [x] Preferências em arquivo (tema e ponto de restauração); o Modo Técnico nunca é lembrado, de propósito
-- [ ] No Modo Técnico, mostrar os ajustes de outras builds como indisponíveis, com o motivo
+- [x] No Modo Técnico, mostrar os ajustes de outras builds em cinza, com o motivo
 - [x] Serviços e tarefas agendadas (lista fechada, um a um, reversível)
 - [ ] Mais ajustes no Modo Técnico (DNS sobre HTTPS)
 
