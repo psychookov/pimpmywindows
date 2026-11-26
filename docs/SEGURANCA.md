@@ -37,6 +37,10 @@ O programa não envia dados seus. O **teste de rede** é a única função que f
 
 A página **Jogos** só lê os arquivos que Steam, Epic e GOG já mantêm (listas de bibliotecas, manifestos e chaves do registro) e não instala, baixa nem envia nada. Os ajustes por jogo gravam apenas valores do usuário atual (`HKCU`) cujo nome é o caminho do executável daquele jogo, passam pela prévia e têm backup. A lista de jogos que você adicionou ou otimizou fica em `%LOCALAPPDATA%\PimpMyWindows\games.json`, para a Central Desfazer continuar reconhecendo os ajustes mesmo se o jogo for desinstalado; um arquivo adulterado é ignorado se o id não bater com o executável.
 
+## Energia
+
+A página Energia só executa o `powercfg.exe` do Windows, com argumentos fixos e identificadores de plano (GUID) conferidos antes de chegar ao comando: listar, ativar um plano que existe e duplicar o modelo oculto “Desempenho máximo” para um plano novo. Nenhum plano existente é alterado ou apagado. Antes de trocar, o plano ativo é guardado em `%LOCALAPPDATA%\PimpMyWindows\power.json`, e “Voltar ao plano anterior” funciona mesmo depois de reiniciar o programa.
+
 ## Limpeza
 
 É a única parte do programa que apaga arquivos, e **apagar não tem como desfazer**, então as regras são mais rígidas: só pastas de lixo conhecidas, com caminhos vindos do próprio Windows (nunca digitados); só arquivos parados há pelo menos 1 dia (temporários); nunca entra em junções ou links simbólicos; cada arquivo é conferido para estar dentro da pasta escolhida antes de apagar; arquivos em uso são pulados; e nada é apagado sem a pessoa marcar e confirmar vendo a quantidade e o tamanho. Navegadores, Downloads, Documentos e a Lixeira não são tocados.

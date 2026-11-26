@@ -4,7 +4,7 @@ namespace PimpMyWindows.Core.Diagnostics;
 
 public sealed record ProcessResult(int ExitCode, string Output);
 
-/// <summary>Executa um programa nativo do Windows (usado só para o pnputil).</summary>
+/// <summary>Executa um programa nativo do Windows (usado para o pnputil e o powercfg).</summary>
 public interface IProcessRunner
 {
     Task<ProcessResult> RunAsync(

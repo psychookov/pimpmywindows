@@ -4,6 +4,7 @@ using PimpMyWindows.Core.Benchmarks;
 using PimpMyWindows.Core.Cleanup;
 using PimpMyWindows.Core.Controllers;
 using PimpMyWindows.Core.Diagnostics;
+using PimpMyWindows.Core.Power;
 using PimpMyWindows.Core.Games;
 using PimpMyWindows.Core.Platform;
 using PimpMyWindows.Core.Safety;
@@ -100,6 +101,11 @@ public partial class App : Application
             prompt,
             appState,
             _log);
+        var powerPage = new PowerPageViewModel(
+            new PowerPlanService(new WindowsProcessRunner(), Path.Combine(dataDirectory, "power.json"), _log),
+            new BatteryService(wmi),
+            prompt,
+            appState);
         var cleanupPage = new CleanupPageViewModel(
             new CleanupService(new WindowsCleanupFileSystem(), _log, IsAdministrator),
             CleanupService.BuildCategories(
@@ -157,7 +163,7 @@ public partial class App : Application
                 }));
 
         shell = new ShellViewModel(
-            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, stressPage, cleanupPage, gamesPage, controllerPage, undoPage, aboutPage, undo,
+            overview, tweaksPage, startupPage, pcPage, driversPage, disksPage, testsPage, stressPage, cleanupPage, powerPage, gamesPage, controllerPage, undoPage, aboutPage, undo,
             appState, prompt, _log, themeController, restore, isAdministrator, environment.Description);
         var viewModel = shell;
 

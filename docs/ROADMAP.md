@@ -24,7 +24,8 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 - [x] Perfis prontos (Privacidade, Jogos, Conforto) com pré-seleção segura
 - [x] Exportar e importar a seleção (JSON)
 - [x] Busca por ajuste, tema claro/escuro, prévia antes de aplicar e Central Desfazer
-- [ ] Perfil Notebook (depende de plano de energia)
+- [x] Página Energia (planos, troca reversível e Desempenho máximo)
+- [ ] Perfil Notebook (pré-seleção de ajustes para quem usa bateria)
 - [ ] Filtro por categoria e risco
 
 ## v0.3 — Mais recursos nativos
@@ -38,7 +39,6 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 
 - Serviços do Windows (lista, explicação e desativar só os seguros, sempre reversível)
 - Tarefas agendadas de telemetria
-- Plano de energia (alto desempenho / equilibrado) via `powercfg`
 - Recursos opcionais do Windows (lista com explicação, via DISM nativo)
 
 ## v0.4 — Comunidade BR
