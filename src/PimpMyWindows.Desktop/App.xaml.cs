@@ -9,6 +9,7 @@ using PimpMyWindows.Core.Power;
 using PimpMyWindows.Core.Games;
 using PimpMyWindows.Core.Platform;
 using PimpMyWindows.Core.Safety;
+using PimpMyWindows.Core.Updates;
 using PimpMyWindows.Core.Settings;
 using PimpMyWindows.Core.Startup;
 using PimpMyWindows.Core.Tweaks;
@@ -135,7 +136,13 @@ public partial class App : Application
             windowsBuild);
         var controllerPage = new ControllerPageViewModel(new XInputProbe(), appState);
         var undoPage = new UndoPageViewModel(undo, prompt, appState);
-        var aboutPage = new AboutPageViewModel(dataDirectory, machineBackupsDirectory, prompt);
+        var aboutPage = new AboutPageViewModel(
+            dataDirectory,
+            machineBackupsDirectory,
+            prompt,
+            new UpdateChecker(
+                new GitHubHttpFetcher(),
+                AppVersion.TryParse(typeof(App).Assembly.GetName().Version?.ToString(3)) ?? new AppVersion(new Version(0, 0, 0), null)));
 
         ShellViewModel? shell = null;
         var overview = new OverviewPageViewModel(

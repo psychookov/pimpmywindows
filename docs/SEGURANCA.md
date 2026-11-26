@@ -24,7 +24,7 @@ O objetivo do Pimp my Windows é deixar o Windows mais enxuto **sem criar risco*
 - Desinstalar programas ou apagar arquivos fora da página Limpeza (e lá só pastas de lixo conhecidas, com confirmação).
 - Desativar ou alterar Windows Defender, firewall, UAC, SmartScreen ou o Windows Update.
 - Mexer em serviços ou tarefas fora de uma lista fechada e avaliada: nunca segurança, Defender, firewall nem Windows Update.
-- Baixar ou executar código de fora, ou enviar qualquer dado.
+- Baixar ou executar código de fora, ou enviar qualquer dado (as duas únicas consultas à internet são o teste de rede e a verificação de atualizações, ambas só quando você clica).
 - Usar ferramentas de terceiros: só registro e comandos nativos.
 
 Os testes do catálogo bloqueiam automaticamente ajustes em chaves sensíveis (`TweakCatalogTests`).
@@ -33,7 +33,11 @@ Os testes do catálogo bloqueiam automaticamente ajustes em chaves sensíveis (`
 
 A lista é **fechada e escrita no código**: ninguém (nem um arquivo de configuração) consegue acrescentar itens. Cada item tem texto explicando o efeito e um nível de risco, e os testes recusam qualquer item de segurança ou de atualização. O programa usa só o `sc.exe` e o `schtasks.exe` do Windows, com argumentos separados (nunca uma linha de comando montada) e nomes validados por regra estrita. Antes de desativar, guarda **como o item estava de verdade** (por exemplo, início automático atrasado) em `%LOCALAPPDATA%\PimpMyWindows\components.json`, e “Restaurar” volta a isso, mesmo depois de reiniciar o programa. Depois de cada alteração o estado é lido de novo para conferir que ela realmente valeu. Serviços não são parados na hora: a mudança vale por completo após reiniciar.
 
-## Teste de rede (a única exceção)
+## Verificar atualizações (a segunda exceção de rede)
+
+Só acontece quando a pessoa clica em “Verificar atualizações” na página Sobre; o programa nunca confere sozinho. É uma única consulta de leitura à API pública do GitHub (`api.github.com`, por https; qualquer outro endereço é recusado no código) que não envia dado nenhum além do cabeçalho padrão. O programa **não baixa nem executa nada**: se houver versão nova, só oferece o link da página da release, e links que não sejam deste repositório são descartados.
+
+## Teste de rede (a primeira exceção)
 
 O programa não envia dados seus. O **teste de rede** é a única função que fala com a internet, e só roda quando você clica, depois de uma confirmação que diz o que será feito: alguns pings ao seu roteador e aos servidores públicos 1.1.1.1 (Cloudflare) e 8.8.8.8 (Google), e a consulta do nome de `microsoft.com`, `google.com` e `wikipedia.org`. Esses servidores veem o endereço IP da sua conexão, como em qualquer acesso à internet. Nada é baixado.
 

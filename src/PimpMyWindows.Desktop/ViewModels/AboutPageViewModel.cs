@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows.Input;
+using PimpMyWindows.Core.Updates;
 using PimpMyWindows.Desktop.Services;
 
 namespace PimpMyWindows.Desktop.ViewModels;
@@ -13,9 +14,18 @@ public sealed class AboutPageViewModel : PageViewModel
     private readonly string _dataDirectory;
     private readonly string _machineBackupsDirectory;
     private readonly IUserPrompt _prompt;
+    private readonly UpdateChecker _updates;
+    private bool _isChecking;
+    private string _updateText = string.Empty;
+    private string? _updateUrl;
 
-    public AboutPageViewModel(string dataDirectory, string machineBackupsDirectory, IUserPrompt prompt)
+    public AboutPageViewModel(
+        string dataDirectory,
+        string machineBackupsDirectory,
+        IUserPrompt prompt,
+        UpdateChecker updates)
     {
+        _updates = updates;
         _dataDirectory = dataDirectory;
         _machineBackupsDirectory = machineBackupsDirectory;
         _prompt = prompt;
@@ -23,6 +33,51 @@ public sealed class AboutPageViewModel : PageViewModel
         OpenBackupsCommand = new RelayCommand(_ => Open(Path.Combine(_dataDirectory, "backups")));
         OpenMachineBackupsCommand = new RelayCommand(_ => Open(_machineBackupsDirectory));
         OpenRepositoryCommand = new RelayCommand(_ => Open(RepositoryUrl));
+        CheckUpdateCommand = new AsyncRelayCommand(_ => CheckAsync(), _ => !_isChecking);
+        OpenUpdateCommand = new RelayCommand(_ =>
+        {
+            if (UpdateChecker.IsRepositoryUrl(_updateUrl))
+            {
+                Open(_updateUrl!);
+            }
+        });
+    }
+
+    public ICommand CheckUpdateCommand { get; }
+
+    public ICommand OpenUpdateCommand { get; }
+
+    public string UpdateText
+    {
+        get => _updateText;
+        private set
+        {
+            if (SetProperty(ref _updateText, value))
+            {
+                OnPropertyChanged(nameof(HasUpdateText));
+            }
+        }
+    }
+
+    public bool HasUpdateText => _updateText.Length > 0;
+
+    public bool HasUpdateLink => _updateUrl is not null;
+
+    private async Task CheckAsync()
+    {
+        _isChecking = true;
+        UpdateText = "Consultando o GitHub…";
+        try
+        {
+            var result = await _updates.CheckAsync();
+            _updateUrl = result.Status == UpdateStatus.UpdateAvailable ? result.PageUrl : null;
+            UpdateText = result.Message;
+            OnPropertyChanged(nameof(HasUpdateLink));
+        }
+        finally
+        {
+            _isChecking = false;
+        }
     }
 
     public override string Key => "about";
