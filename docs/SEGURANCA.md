@@ -21,13 +21,17 @@ O objetivo do Pimp my Windows é deixar o Windows mais enxuto **sem criar risco*
 
 ## O que o programa nunca faz
 
-- Apagar arquivos ou desinstalar programas.
+- Desinstalar programas ou apagar arquivos fora da página Limpeza (e lá só pastas de lixo conhecidas, com confirmação).
 - Desativar ou alterar Windows Defender, firewall, UAC, SmartScreen ou o Windows Update.
-- Desativar serviços do Windows (por enquanto).
+- Mexer em serviços ou tarefas fora de uma lista fechada e avaliada: nunca segurança, Defender, firewall nem Windows Update.
 - Baixar ou executar código de fora, ou enviar qualquer dado.
 - Usar ferramentas de terceiros: só registro e comandos nativos.
 
 Os testes do catálogo bloqueiam automaticamente ajustes em chaves sensíveis (`TweakCatalogTests`).
+
+## Serviços e tarefas agendadas
+
+A lista é **fechada e escrita no código**: ninguém (nem um arquivo de configuração) consegue acrescentar itens. Cada item tem texto explicando o efeito e um nível de risco, e os testes recusam qualquer item de segurança ou de atualização. O programa usa só o `sc.exe` e o `schtasks.exe` do Windows, com argumentos separados (nunca uma linha de comando montada) e nomes validados por regra estrita. Antes de desativar, guarda **como o item estava de verdade** (por exemplo, início automático atrasado) em `%LOCALAPPDATA%\PimpMyWindows\components.json`, e “Restaurar” volta a isso, mesmo depois de reiniciar o programa. Depois de cada alteração o estado é lido de novo para conferir que ela realmente valeu. Serviços não são parados na hora: a mudança vale por completo após reiniciar.
 
 ## Teste de rede (a única exceção)
 

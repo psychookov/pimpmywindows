@@ -18,7 +18,8 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 - [x] Modo Básico e Modo Técnico
 - [x] Preferências em arquivo (tema e ponto de restauração); o Modo Técnico nunca é lembrado, de propósito
 - [ ] No Modo Técnico, mostrar os ajustes de outras builds como indisponíveis, com o motivo
-- [ ] Mais ajustes no Modo Técnico (serviços, tarefas agendadas, DNS sobre HTTPS)
+- [x] Serviços e tarefas agendadas (lista fechada, um a um, reversível)
+- [ ] Mais ajustes no Modo Técnico (DNS sobre HTTPS)
 
 - [x] Painel de visão geral: o que já está otimizado, o que não está
 - [x] Perfis prontos (Privacidade, Jogos, Conforto) com pré-seleção segura
@@ -37,8 +38,6 @@ Ideias organizadas por etapa. Nada aqui é promessa: entra o que for seguro e ve
 - [x] Teste de estresse (CPU e memória, com limite de tempo e cancelamento)
 - [x] Limpeza segura de temporários com prévia (só pastas conhecidas, arquivos parados há mais de 1 dia)
 
-- Serviços do Windows (lista, explicação e desativar só os seguros, sempre reversível)
-- Tarefas agendadas de telemetria
 - Recursos opcionais do Windows (lista com explicação, via DISM nativo)
 
 ## v0.4 — Comunidade BR

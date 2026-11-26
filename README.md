@@ -60,7 +60,8 @@ O catálogo tem hoje **24 ajustes**: 20 no Modo Básico e 4 no Modo Técnico. To
 - **Drivers**: lista os drivers instalados, destaca aparelhos com problema e drivers antigos de vídeo, rede, áudio e Bluetooth. Faz **backup e restauração** de todos os drivers pelo `pnputil` (a restauração só aceita pastas criadas pelo programa) e abre o Windows Update. Não baixa drivers de site nenhum.
 - **Saúde dos discos**: estado, desgaste, temperatura e erros de cada HD/SSD pelas APIs de armazenamento do Windows. Só leitura.
 - **Testes**: benchmarks de processador, memória e disco, **sempre comparados com o teste anterior** do mesmo computador (para ver se um ajuste ajudou de verdade), teste de rede (latência, variação, perda de pacotes e DNS) e estado e desgaste da bateria. O teste de disco usa um arquivo temporário próprio e o apaga no fim.
-- **Energia** (novo): mostra os planos de energia do Windows, troca de plano com **volta garantida** (o anterior fica guardado, até depois de fechar o programa) e cria o plano **Desempenho máximo** do próprio Windows. Em notebook, avisa o que vale na bateria e na tomada. Usa só o `powercfg`.
+- **Serviços e tarefas** (novo): desativa, um a um e com “Restaurar”, serviços e tarefas agendadas de telemetria e de recursos que quase ninguém usa (DiagTrack, mapas offline, avaliador de compatibilidade, entre outros). A lista é fechada e avaliada; nada de segurança ou Windows Update. Guarda como cada item estava de verdade para voltar exatamente a isso.
+- **Energia**: mostra os planos de energia do Windows, troca de plano com **volta garantida** (o anterior fica guardado, até depois de fechar o programa) e cria o plano **Desempenho máximo** do próprio Windows. Em notebook, avisa o que vale na bateria e na tomada. Usa só o `powercfg`.
 - **Limpeza**: mostra quanto espaço dá para liberar em temporários do usuário e do Windows, cache de miniaturas e relatórios de erro, **antes** de apagar. Só mexe em pastas de lixo conhecidas, só em arquivos parados há mais de 1 dia, pula arquivos em uso e nunca segue atalhos de pasta para fora. Apagar arquivo não tem como desfazer, por isso pede confirmação com os tamanhos.
 - **Teste de estresse**: coloca todos os núcleos e um bloco de memória para trabalhar por 1, 5 ou 10 minutos e diz se o computador aguentou: queda de desempenho (sinal de aquecimento) e erros de memória. Pede confirmação, tem botão de cancelar, para sozinho se você sair da página e não grava nada no disco.
 - **Jogos**: acha os jogos da Steam, Epic Games e GOG lendo só os arquivos dos próprios lançadores (você também pode adicionar um .exe à mão) e oferece, **para cada jogo**, usar a placa de vídeo dedicada e, no Modo Técnico, desativar as otimizações de tela inteira. Passa pela mesma prévia, backup e Central Desfazer dos outros ajustes.
@@ -122,7 +123,7 @@ Os testes também checam regras do catálogo: IDs únicos, valor otimizado difer
 - **Assinatura digital** do `.exe` (por isso o SmartScreen pode avisar) e uma versão estável (1.0).
 - **Validação completa em Windows real**: cada ajuste, e as leituras de discos e drivers, ainda precisam ser conferidos um a um em máquina virtual e em hardware de verdade.
 - **Lembrar o Modo Técnico** entre execuções: de propósito, o programa sempre abre no Básico. (O tema escolhido é lembrado.)
-- Serviços do Windows, tarefas agendadas e DNS sobre HTTPS.
+- DNS sobre HTTPS.
 - Remoção de aplicativos pré-instalados (decisão de projeto em aberto, por não ser 100% reversível).
 
 O plano completo está no [roadmap](docs/ROADMAP.md).
