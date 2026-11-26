@@ -26,6 +26,16 @@
         <Button Content="Abrir cópias da máquina" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding OpenMachineBackupsCommand}" />
       </WrapPanel>
 
+      <TextBlock Text="ATUALIZAÇÕES" Style="{StaticResource SectionTitle}" />
+      <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource Muted}"
+                 Text="O programa nunca confere sozinho. Ao clicar, ele faz uma única consulta ao GitHub (sem enviar nenhum dado seu) e, se houver versão nova, mostra o link da página dela. Nada é baixado nem instalado por ele." />
+      <WrapPanel Margin="0,8,0,0">
+        <Button Content="Verificar atualizações" Style="{StaticResource GhostButton}" Margin="0,0,8,8" Command="{Binding CheckUpdateCommand}" />
+        <Button Content="Abrir página da versão nova" Style="{StaticResource PrimaryButton}" Margin="0,0,8,8" Command="{Binding OpenUpdateCommand}"
+                Visibility="{Binding HasUpdateLink, Converter={StaticResource BoolToVis}}" />
+      </WrapPanel>
+      <TextBlock Text="{Binding UpdateText}" TextWrapping="Wrap" Visibility="{Binding HasUpdateText, Converter={StaticResource BoolToVis}}" />
+
       <TextBlock Text="CÓDIGO ABERTO" Style="{StaticResource SectionTitle}" />
       <TextBlock TextWrapping="Wrap" Text="Licença MIT. Qualquer pessoa pode ler o código, sugerir melhorias e contribuir." />
       <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource Muted}" Margin="0,16,0,0"
