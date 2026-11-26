@@ -133,9 +133,15 @@ public sealed class TweaksPageViewModel : PageViewModel
     private void LoadItems()
     {
         _items.Clear();
-        foreach (var tweak in _catalog.Where(t => TweakApplicability.IsApplicable(t, _windowsBuild)))
+        foreach (var tweak in _catalog)
         {
-            var item = new TweakItemViewModel(tweak, _engine.GetState(tweak));
+            var applicable = TweakApplicability.IsApplicable(tweak, _windowsBuild);
+            var item = applicable
+                ? new TweakItemViewModel(tweak, _engine.GetState(tweak))
+                : new TweakItemViewModel(
+                    tweak,
+                    TweakState.NotApplied,
+                    $"Não vale para o seu Windows (build {_windowsBuild}). Existe em: {TweakApplicability.DescribeSupportedVersions(tweak)}.");
             item.PendingChanged += UpdateCounters;
             _items.Add(item);
         }
@@ -145,7 +151,7 @@ public sealed class TweaksPageViewModel : PageViewModel
 
     private void ReloadStates()
     {
-        foreach (var item in _items.Where(i => !i.IsPending))
+        foreach (var item in _items.Where(i => !i.IsPending && i.IsAvailable))
         {
             item.Accept(_engine.GetState(item.Definition));
         }
@@ -153,8 +159,12 @@ public sealed class TweaksPageViewModel : PageViewModel
         UpdateCounters();
     }
 
+    /// <summary>
+    /// No Modo Básico: só o que é básico e vale para este Windows. No Modo Técnico: tudo, e o que não vale
+    /// aqui aparece em cinza, com o motivo, para quem quer saber o que existe em outras versões.
+    /// </summary>
     private IEnumerable<TweakItemViewModel> VisibleByMode =>
-        _items.Where(i => _state.IsTechnicalMode || !i.IsTechnical);
+        _items.Where(i => _state.IsTechnicalMode || (!i.IsTechnical && i.IsAvailable));
 
     private void OnModeChanged()
     {
@@ -183,9 +193,17 @@ public sealed class TweaksPageViewModel : PageViewModel
             Groups.Add(new TweakGroupViewModel(CategoryTitle(group.Key), group.ToList()));
         }
 
-        var hiddenByWindows = _catalog.Count(t => !TweakApplicability.IsApplicable(t, _windowsBuild));
-        var hiddenByMode = _items.Count - VisibleByMode.Count();
+        var hiddenByWindows = _items.Count(i => !i.IsAvailable && !i.IsTechnical && !_state.IsTechnicalMode);
+        var hiddenByMode = _items.Count(i => i.IsAvailable && i.IsTechnical && !_state.IsTechnicalMode);
+        var grayed = _state.IsTechnicalMode ? _items.Count(i => !i.IsAvailable) : 0;
         var parts = new List<string>();
+        if (grayed > 0)
+        {
+            parts.Add(
+                $"{grayed} {(grayed == 1 ? "ajuste em cinza" : "ajustes em cinza")} " +
+                $"por não valer para o seu Windows (build {_windowsBuild})");
+        }
+
         if (hiddenByMode > 0)
         {
             parts.Add($"{hiddenByMode} {(hiddenByMode == 1 ? "ajuste avançado" : "ajustes avançados")} no Modo Técnico");
@@ -210,7 +228,7 @@ public sealed class TweaksPageViewModel : PageViewModel
     private void UpdateCounters()
     {
         PendingCount = _items.Count(i => i.IsPending);
-        var shown = VisibleByMode.ToList();
+        var shown = VisibleByMode.Where(i => i.IsAvailable).ToList();
         var active = shown.Count(i => i.IsApplied);
         SummaryText = $"{active} de {shown.Count} ajustes ativos";
     }
@@ -240,7 +258,8 @@ public sealed class TweaksPageViewModel : PageViewModel
 
     private static void SetDesired(IEnumerable<TweakItemViewModel> items)
     {
-        foreach (var item in items.ToList())
+        // Ajuste em cinza (que não vale para este Windows) nunca pode virar pendência.
+        foreach (var item in items.Where(i => i.IsAvailable).ToList())
         {
             item.Desired = true;
         }
@@ -400,7 +419,7 @@ public sealed class TweaksPageViewModel : PageViewModel
 
         try
         {
-            var valid = TweakSelection.Import(File.ReadAllText(path), _items.Select(i => i.Definition.Id), out var unknown);
+            var valid = TweakSelection.Import(File.ReadAllText(path), _items.Where(i => i.IsAvailable).Select(i => i.Definition.Id), out var unknown);
             var visibleIds = VisibleByMode.Where(i => i.CanToggle).Select(i => i.Definition.Id).ToHashSet();
             var usable = valid.Where(visibleIds.Contains).ToList();
             SetDesired(_items.Where(i => usable.Contains(i.Definition.Id)));

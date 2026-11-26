@@ -10,10 +10,11 @@ public sealed class TweakItemViewModel : ObservableObject
     private bool _desired;
     private bool _isExpanded;
 
-    public TweakItemViewModel(TweakDefinition definition, TweakState state)
+    public TweakItemViewModel(TweakDefinition definition, TweakState state, string? unavailableReason = null)
     {
         Definition = definition;
-        _state = state;
+        UnavailableReason = unavailableReason;
+        _state = unavailableReason is null ? state : TweakState.NotApplied;
         _desired = state == TweakState.Applied;
         SearchIndex = Normalize($"{definition.Name} {definition.Summary} {definition.Details}");
     }
@@ -24,6 +25,13 @@ public sealed class TweakItemViewModel : ObservableObject
     public TweakDefinition Definition { get; }
 
     public string SearchIndex { get; }
+
+    /// <summary>Preenchido quando o ajuste não vale para este Windows; ele só aparece (em cinza) no Modo Técnico.</summary>
+    public string? UnavailableReason { get; }
+
+    public bool IsAvailable => UnavailableReason is null;
+
+    public double RowOpacity => IsAvailable ? 1.0 : 0.55;
 
     public string Name => Definition.Name;
 
@@ -86,11 +94,11 @@ public sealed class TweakItemViewModel : ObservableObject
     public bool IsPending => _desired != IsApplied;
 
     /// <summary>Estado desconhecido não permite mexer: o programa não sabe como está agora.</summary>
-    public bool CanToggle => _state != TweakState.Unknown;
+    public bool CanToggle => IsAvailable && _state != TweakState.Unknown;
 
-    public bool HasStateTag => _state is TweakState.Applied or TweakState.Partial or TweakState.Unknown;
+    public bool HasStateTag => !IsAvailable || _state is TweakState.Applied or TweakState.Partial or TweakState.Unknown;
 
-    public string StateText => _state switch
+    public string StateText => !IsAvailable ? "Indisponível neste Windows" : _state switch
     {
         TweakState.Applied => "Ativo",
         TweakState.Partial => "Parcial",

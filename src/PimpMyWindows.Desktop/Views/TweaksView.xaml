@@ -4,7 +4,7 @@
   <UserControl.Resources>
     <DataTemplate x:Key="TweakTemplate">
       <Border Style="{StaticResource Card}">
-        <Grid>
+        <Grid Opacity="{Binding RowOpacity}">
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -32,6 +32,8 @@
               </Border>
             </WrapPanel>
             <TextBlock Text="{Binding Summary}" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" Margin="0,4,0,0" />
+            <TextBlock Text="{Binding UnavailableReason}" Foreground="{DynamicResource Warning}" FontSize="12" TextWrapping="Wrap"
+                       Margin="0,4,0,0" Visibility="{Binding UnavailableReason, Converter={StaticResource NotEmptyToVis}}" />
             <ToggleButton Style="{StaticResource LinkToggle}" IsChecked="{Binding IsExpanded, Mode=TwoWay}"
                           Margin="0,6,0,0" HorizontalAlignment="Left" Content="Saiba mais / menos" />
             <StackPanel Margin="0,8,0,0" Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVis}}">
